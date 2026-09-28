@@ -19,7 +19,6 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
-html.is-mobile, html.is-reduced { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 300 17px/1.65 var(--sans); overflow-x: clip; -webkit-font-smoothing: antialiased; }
 img, video { display: block; max-width: 100%; }
 a { color: inherit; }
@@ -272,19 +271,17 @@ h1, h2, h3, p, figure, ul { margin: 0; }
 .immersion { position: relative; background: #0c0a09; overflow: clip; }
 /* la scène reste collée à l'écran sans occuper de place dans le flux : les étapes défilent dessous */
 .stage { position: sticky; top: 0; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; overflow: hidden; }
-.stage-media { position: absolute; inset: 0; transition: opacity .3s ease, filter .8s ease; }
-/* trois vidéos superposées : l'intro (l'enseigne s'allume), le film, la boucle d'ambiance aux étapes */
-.stage-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 75%; opacity: 0; transition: opacity .6s ease, object-position 1.4s cubic-bezier(.4, 0, .2, 1); pointer-events: none; background: transparent; }
-/* aux étapes des box et du stand, l'image glisse un peu vers la gauche pour laisser la place au titre */
-.frame-right .stage-video { object-position: 88% 75%; }
-.v-intro { opacity: 1; }
-.film-ready .v-film { opacity: 1; }
-.film-ready .v-intro { opacity: 0; }
-.v-ambient { transition-duration: .35s; }
-.ambient-on .v-ambient { opacity: 1; transition-duration: .9s; }
-.is-cut .stage-media { opacity: 0; transition-duration: .22s; }
-.story-on .stage-media { filter: brightness(.5); }
-.stage-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(12, 10, 9, .6) 0%, rgba(12, 10, 9, 0) 24%); }
+/* le cadre garde la taille naturelle du film (jamais agrandi ni recadré), bords fondus dans le noir ;
+   sa place (--mx, --my, --mw) dépend de l'étape et glisse en douceur pendant le mouvement de caméra */
+.stage-media { position: absolute; left: 0; top: 0; width: var(--mw, 60vw); aspect-ratio: 16 / 9; transform: translate(var(--mx, 3vw), var(--my, 20vh));
+  transition: transform 1.2s cubic-bezier(.65, 0, .35, 1), width 1.2s cubic-bezier(.65, 0, .35, 1), opacity .3s ease;
+  -webkit-mask-image: radial-gradient(ellipse 74% 72% at 50% 50%, #000 60%, transparent 100%); mask-image: radial-gradient(ellipse 74% 72% at 50% 50%, #000 60%, transparent 100%); }
+/* image fixe de l'étape, et deux lecteurs : l'un joue le mouvement pendant que l'autre prépare le suivant */
+.stage-still, .stage-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.stage-video { opacity: 0; background: transparent; }
+.stage-video.is-front { opacity: 1; }
+.is-cut .stage-media { opacity: 0; transition-duration: 1.2s, 1.2s, .22s; }
+.stage-shade { display: none; }
 /* une étape = un écran ; le navigateur s'y cale et ne saute jamais une étape d'un seul geste */
 html { scroll-snap-type: y mandatory; }
 .step { height: 100vh; height: 100svh; scroll-snap-align: start; scroll-snap-stop: always; pointer-events: none; }
@@ -307,10 +304,6 @@ html { scroll-snap-type: y mandatory; }
 .journey a span { opacity: 0; transform: translateX(-6px); transition: opacity .4s, transform .4s, color .4s; text-shadow: 0 1px 8px rgba(0, 0, 0, .9); }
 .journey a.is-current::before { background: var(--gold-hi); border-color: var(--gold-hi); box-shadow: 0 0 12px rgba(226, 173, 98, .7); transform: scale(1.15); }
 .journey a.is-current span, .journey a:hover span, .journey a:focus-visible span { opacity: 1; transform: none; color: var(--cream); }
-.film-loading { position: absolute; left: clamp(18px, 2.2vw, 34px); bottom: 86px; display: grid; gap: 8px; font: 400 .6rem/1 var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--muted); transition: opacity .6s; }
-.film-loading i { display: block; width: 120px; height: 1px; background: rgba(243, 231, 211, .18); }
-.film-loading i::after { content: ""; display: block; height: 100%; width: calc(var(--p, 0) * 100%); background: var(--gold-hi); }
-.film-ready .film-loading { opacity: 0; }
 .next-step { position: absolute; left: clamp(18px, 2.2vw, 34px); bottom: 26px; display: inline-flex; align-items: center; gap: 12px; padding: 12px 18px 12px 14px; border-radius: 999px; border: 1px solid rgba(243, 231, 211, .3); background: rgba(12, 10, 9, .55);
   color: var(--cream); font: 500 .66rem/1 var(--sans); letter-spacing: .24em; text-transform: uppercase; cursor: pointer; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color .3s, background-color .3s; }
 .next-step::before { content: ""; width: 8px; height: 8px; border-right: 1.5px solid var(--gold-hi); border-bottom: 1.5px solid var(--gold-hi); transform: rotate(45deg) translateY(-2px); animation: nudge 1.8s ease-in-out infinite; }
@@ -318,7 +311,7 @@ html { scroll-snap-type: y mandatory; }
 .next-step:hover, .next-step:focus-visible { border-color: var(--gold-hi); background: rgba(201, 138, 54, .2); }
 
 /* intro et histoire : centrées sous l'enseigne (--neon-b = bas de l'enseigne, calculé par le script) */
-.layer-intro, .layer-story { align-items: center; text-align: center; padding: min(var(--neon-b, 68vh), calc(100vh - 262px)) var(--gutter) 0; }
+.layer-intro, .layer-story { align-items: center; text-align: center; padding: var(--neon-b, 60vh) var(--gutter) 0; }
 .layer-intro .eyebrow { justify-content: center; }
 .layer-intro .hero-title { margin-top: 14px; font: 400 min(4.4vw, 7vh)/1 var(--serif); }
 .layer-intro .hero-title em { font-style: italic; color: var(--gold-hi); }
@@ -327,18 +320,15 @@ html { scroll-snap-type: y mandatory; }
 .scroll-hint { margin-top: 22px; font-size: .66rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); animation: hint 2.4s ease-in-out infinite; }
 .scroll-hint .on-touch { display: none; }
 @keyframes hint { 0%, 100% { opacity: .35; transform: translateY(0); } 50% { opacity: .9; transform: translateY(6px); } }
-.layer-story { padding-top: min(var(--neon-b, 68vh), calc(100vh - 330px)); }
-.layer-story::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 70%; pointer-events: none; background: radial-gradient(ellipse 60% 70% at 50% 75%, rgba(12, 10, 9, .8), rgba(12, 10, 9, 0)); }
 .layer-story .eyebrow { justify-content: center; }
-.layer-story .story-text { margin-top: 14px; max-width: 44em; font: 400 clamp(1.15rem, 1.55vw, 1.5rem)/1.45 var(--serif); color: var(--cream); text-shadow: 0 1px 12px rgba(0, 0, 0, .8); }
+.layer-story .story-text { margin-top: 14px; max-width: 44em; font: 400 clamp(1.15rem, 1.5vw, 1.45rem)/1.45 var(--serif); color: var(--cream); }
 .story-text strong { font-weight: 400; color: var(--gold-hi); }
 .layer-story .story-sign { margin-top: 12px; font: italic 400 clamp(1.3rem, 1.7vw, 1.6rem) var(--serif); color: var(--gold-hi); }
 
 /* étapes pâtes et sauces : le nom en grand, le détail au clic */
-.layer-side { justify-content: center; align-items: flex-end; padding: 0 var(--gutter); }
-.layer-side::before { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: min(760px, 52vw); pointer-events: none;
-  background: radial-gradient(closest-side at 62% 50%, rgba(12, 10, 9, .86), rgba(12, 10, 9, .5) 55%, rgba(12, 10, 9, 0)); }
-.stop-card { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; width: min(410px, 27vw); padding: 0; background: none; border: 0; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+/* à droite du cadre, jamais par-dessus l'image */
+.layer-side { justify-content: center; align-items: flex-start; padding: 0 var(--gutter) 0 var(--text-x, 66vw); }
+.stop-card { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; width: min(440px, calc(100vw - var(--text-x, 66vw) - var(--gutter))); padding: 0; background: none; border: 0; color: inherit; text-align: left; font: inherit; cursor: pointer; }
 .stop-title { font: 400 clamp(3rem, 4.9vw, 5.8rem)/.92 var(--serif); letter-spacing: -.01em; color: var(--cream); text-wrap: balance; }
 .stop-title em { font-style: italic; color: var(--gold-hi); }
 .layer-side[data-show="artisan"] .stop-title { font-size: clamp(2.4rem, 3.6vw, 4.2rem); line-height: 1; }
@@ -351,11 +341,8 @@ html { scroll-snap-type: y mandatory; }
 .stop-card:focus-visible { outline: 2px solid var(--gold-hi); outline-offset: 10px; border-radius: 12px; }
 
 /* événements : titre et grandes cases à droite (grille 3 + 2), la box du stand reste visible à gauche */
-.layer-windows { justify-content: flex-end; align-items: flex-end; padding: 0 var(--gutter) 26px; }
-.layer-windows::before { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(ellipse 52% 78% at 74% 60%, rgba(12, 10, 9, .9) 42%, rgba(12, 10, 9, .55) 72%, rgba(12, 10, 9, 0) 100%); }
-.events-panel .eyebrow, .events-title { text-shadow: 0 2px 18px rgba(0, 0, 0, .9); }
-.events-panel { width: min(860px, calc(100vw - var(--win-left, 42vw) - var(--gutter))); display: flex; flex-direction: column; gap: 10px; }
+.layer-windows { justify-content: center; align-items: flex-start; padding: 40px var(--gutter) 0 var(--win-left, 50vw); }
+.events-panel { width: min(900px, calc(100vw - var(--win-left, 50vw) - var(--gutter))); display: flex; flex-direction: column; gap: 10px; }
 .events-title { font: 400 clamp(2.2rem, 3.3vw, 3.6rem)/1 var(--serif); }
 .events-title em { font-style: italic; color: var(--gold-hi); }
 .events-line { color: var(--muted); font-size: .95rem; line-height: 1.5; text-shadow: 0 1px 10px rgba(0, 0, 0, .9); }
@@ -377,7 +364,6 @@ html { scroll-snap-type: y mandatory; }
 
 /* écrans d'ordinateur peu hauts : intro et événements plus compacts */
 @media (min-width: 821px) and (max-height: 820px) {
-  .layer-intro { padding-top: min(var(--neon-b, 68vh), calc(100vh - 212px)); }
   .layer-intro .scroll-hint { display: none; }
   .layer-intro .hero-sub { margin-top: 10px; }
   .layer-intro .hero-actions { margin-top: 14px; }
@@ -388,10 +374,6 @@ html { scroll-snap-type: y mandatory; }
 @media (min-width: 821px) and (max-height: 760px) {
   .window-line { display: none; }
   .events-line { font-size: .88rem; }
-  .layer-story { padding-top: min(var(--neon-b, 68vh), calc(100vh - 290px)); }
-  /* histoire sur écran peu haut : l'enseigne remonte et s'atténue davantage sous le texte agrandi */
-  .story-on .stage-video { object-position: 50% 100%; }
-  .story-on .stage-media { filter: brightness(.4); }
 }
 
 /* fiche détaillée (pâtes, sauces, événements) */
@@ -411,11 +393,6 @@ html { scroll-snap-type: y mandatory; }
 
 /* téléphone : l'image occupe le haut de l'écran, le nom de l'étape se pose juste dessous */
 @media (max-width: 820px) {
-  .stage-shade { background: linear-gradient(0deg, rgba(12, 10, 9, .96) 0%, rgba(12, 10, 9, .82) 38%, rgba(12, 10, 9, 0) 54%); }
-  /* bande d'image recadrée par une seule transformation (calculée par le script), bords fondus dans le noir */
-  .stage-media { inset: auto; left: 0; top: 0; width: 100%; height: auto; aspect-ratio: 16 / 9; transform-origin: 0 0; will-change: transform;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 80%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 14%, #000 80%, transparent 100%); }
-  .stage-video { object-position: 50% 50%; }
   .layer.layer-journey { justify-content: flex-start; align-items: stretch; padding: calc(max(16px, env(safe-area-inset-top)) + 50px) 20px 0; }
   .journey { flex-direction: row; justify-content: space-between; gap: 0; padding: 0; }
   .journey-track { left: 4px; right: 4px; top: 50%; bottom: auto; width: auto; height: 1px; }
@@ -423,11 +400,9 @@ html { scroll-snap-type: y mandatory; }
   .journey a { width: 24px; height: 24px; justify-content: center; }
   .journey a::before { width: 7px; height: 7px; }
   .journey a span { display: none; }
-  .film-loading { left: auto; right: 20px; bottom: auto; top: calc(max(16px, env(safe-area-inset-top)) + 84px); justify-items: end; }
-  .film-loading i { width: 90px; }
   .next-step { display: none; }
   .layer { justify-content: flex-end; padding: 0 20px calc(max(14px, env(safe-area-inset-bottom)) + 74px); }
-  .layer-intro, .layer-story { padding-top: 0; }
+  .layer-intro, .layer-story { justify-content: flex-start; padding-top: var(--band-b, 45svh); }
   .layer-intro .hero-title { font-size: 2.15rem; line-height: 1.02; }
   .layer-intro .hero-sub { font-size: .95rem; }
   .layer-intro .hero-actions .btn-gold { display: none; }
@@ -435,13 +410,13 @@ html { scroll-snap-type: y mandatory; }
   .scroll-hint .on-touch { display: inline; }
   .layer-story { padding-bottom: calc(max(14px, env(safe-area-inset-bottom)) + 18px); }
   .layer-story .story-text { font-size: 1.08rem; line-height: 1.42; }
-  .layer-side { justify-content: flex-start; align-items: stretch; padding-top: var(--band-b, 60svh); }
+  .layer-side { justify-content: flex-start; align-items: stretch; padding: var(--band-b, 60svh) 20px 0; }
   .layer-side::before { display: none; }
   .stop-card { width: auto; gap: 14px; }
+  .layer-windows { justify-content: flex-start; padding-top: var(--band-b, 40svh); }
   .stop-title { font-size: 3.1rem; }
   .layer-side[data-show="artisan"] .stop-title { font-size: 2.3rem; }
-  .layer-windows { align-items: stretch; padding: 0 0 calc(max(14px, env(safe-area-inset-bottom)) + 12px); }
-  .layer-windows::before { width: 100%; height: 70%; background: linear-gradient(0deg, rgba(12, 10, 9, .95) 30%, rgba(12, 10, 9, 0)); }
+  .layer-windows { align-items: stretch; padding-left: 0; padding-right: 0; padding-bottom: 0; }
   .events-panel { width: 100%; gap: 8px; }
   .events-panel > .eyebrow, .events-title, .events-line { padding: 0 20px; }
   .events-title { font-size: 1.8rem; }
