@@ -278,8 +278,11 @@ h1, h2, h3, p, figure, ul { margin: 0; }
   -webkit-mask-image: radial-gradient(ellipse 74% 72% at 50% 50%, #000 60%, transparent 100%); mask-image: radial-gradient(ellipse 74% 72% at 50% 50%, #000 60%, transparent 100%); }
 /* image fixe de l'étape, et deux lecteurs : l'un joue le mouvement pendant que l'autre prépare le suivant */
 .stage-still, .stage-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-.stage-video { opacity: 0; background: transparent; }
+.stage-video { opacity: 0; background: transparent; transition: opacity .25s ease; }
 .stage-video.is-front { opacity: 1; }
+/* vapeur à l'arrêt : apparaît en douceur sur l'image fixe (identique), s'efface quand le mouvement suivant commence */
+.stage-loop { transition-duration: .5s; }
+.stage-loop.is-on { opacity: 1; }
 .is-cut .stage-media { opacity: 0; transition-duration: 1.2s, 1.2s, .22s; }
 .stage-shade { display: none; }
 /* une étape = un écran ; le navigateur s'y cale et ne saute jamais une étape d'un seul geste */

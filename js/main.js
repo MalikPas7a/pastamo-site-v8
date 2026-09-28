@@ -62,17 +62,18 @@
      Chaque mouvement de caméra est une courte vidéo lue normalement, comme n'importe quelle vidéo de fond (la méthode
      la plus sûre sur iPhone) : elle part exactement de l'image fixe de l'étape précédente et finit sur celle de la suivante.
      Un geste (défilement, glissement, flèche, « Suivant », clic sur une étape) passe à l'étape suivante ;
-     revenir en arrière ou sauter plus loin se fait par un fondu. À l'arrivée, l'image reste fixe. */
+     revenir en arrière ou sauter plus loin se fait par un fondu. À l'arrivée, seule une légère vapeur continue de monter
+     (l'image de l'étape reste fixe au pixel près, la caméra ne bouge pas) ; aux pâtes fraîches, la fine farine continue de tomber. */
   const STOPS = [
     { id: 'intro', show: ['intro'], layout: 'center' },
-    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine' },
-    { id: 'bolognese', show: ['bolognese'], layout: 'left' },
-    { id: 'pesto', show: ['pesto'], layout: 'left' },
-    { id: 'pomodoro', show: ['pomodoro'], layout: 'left' },
-    { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse' },
+    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine', loop: true },
+    { id: 'bolognese', show: ['bolognese'], layout: 'left', loop: true },
+    { id: 'pesto', show: ['pesto'], layout: 'left', loop: true },
+    { id: 'pomodoro', show: ['pomodoro'], layout: 'left', loop: true },
+    { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '4'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '5'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   const src = (name) => `assets/film/${variant}/${name}?v=${FILM_V}`;
 
   const section = document.getElementById('immersion');
@@ -80,6 +81,7 @@
   const media = document.getElementById('stageMedia');
   const still = document.getElementById('stageStill');
   const vids = [document.getElementById('vidA'), document.getElementById('vidB')];
+  const loopV = document.getElementById('vidLoop');
   const steps = [...section.querySelectorAll('.step')];
   const layers = Object.fromEntries([...section.querySelectorAll('[data-show]')].map((l) => [l.dataset.show, l]));
   const windows = [...section.querySelectorAll('.window')];
@@ -87,7 +89,7 @@
   const journeyFill = document.getElementById('journeyFill');
   const nextBtn = document.getElementById('nextStep');
   windows.forEach((w, i) => w.style.setProperty('--i', i));
-  vids.forEach((v) => { v.muted = true; v.playsInline = true; });
+  [...vids, loopV].forEach((v) => { v.muted = true; v.playsInline = true; });
   // les images fixes des étapes sont petites : on les charge toutes pour des retours et des fondus instantanés
   const stills = STOPS.map((_, i) => { const im = new Image(); im.src = src(`stop-${i}.webp`); return im; });
 
@@ -125,7 +127,7 @@
   };
 
   /* Lecture : S = étape visée, at = étape affichée (arrivée), queue = mouvements à jouer */
-  let S = 0, at = 0, playing = null, cutting = false, introDone = reduced;
+  let S = 0, at = 0, playing = null, cutting = false, introDone = reduced, playId = 0;
   const queue = [];
   const front = (v) => vids.forEach((x) => x.classList.toggle('is-front', x === v));
   const showStill = (i) => { still.src = stills[i].src; };
@@ -136,10 +138,31 @@
     v.preload = 'auto';
     v.load();
   };
+  /* Vapeur à l'arrêt : boucle de l'étape, dont la première image est l'image fixe elle-même (aucun saut) */
+  let loopFor = null;
+  const loopPrepare = (i) => {
+    if (reduced || !STOPS[i] || !STOPS[i].loop || loopFor === i) return;
+    loopFor = i;
+    loopV.classList.remove('is-on');
+    loopV.src = src(`loop-${i}.mp4`);
+    loopV.preload = 'auto';
+    loopV.load();
+  };
+  const loopStart = (i) => {
+    if (reduced || !STOPS[i].loop) return;
+    loopPrepare(i);
+    try { loopV.currentTime = 0; } catch (e) { /* pas encore chargée */ }
+    const p = loopV.play();
+    const show = () => { if (at === i && !playing && S === i) loopV.classList.add('is-on'); };
+    if (p && p.then) p.then(() => (loopV.readyState >= 2 ? show() : loopV.addEventListener('playing', show, { once: true })), () => {});
+  };
+  const loopStop = () => { loopV.classList.remove('is-on'); setTimeout(() => { if (!loopV.classList.contains('is-on')) loopV.pause(); }, 300); };
+
   const arrive = (i) => {
     at = i;
     showStill(i);
     updateLayers();
+    if (!playing && !queue.length && S === i) loopStart(i);
     // prépare le mouvement suivant dans le lecteur qui n'est pas affiché (jamais dans celui qui montre l'image)
     if (i + 1 < STOPS.length && !queue.length) prepare(vids.find((v) => !v.classList.contains('is-front') && v !== playing) || vids[1], i + 1);
   };
@@ -149,13 +172,18 @@
     const v = vids.find((x) => x.dataset.move === String(i)) || vids.find((x) => !x.classList.contains('is-front')) || vids[0];
     prepare(v, i);
     playing = v;
+    // chaque lecture a son numéro : un mouvement interrompu (retour en arrière) ne peut plus « finir » à la place d'un autre
+    const id = ++playId;
+    const mine = () => playing === v && id === playId;
     try { v.currentTime = 0; } catch (e) { /* pas encore chargée : elle partira du début */ }
     v.playbackRate = queue.length ? 1.6 : 1; // plusieurs gestes d'affilée : on enchaîne un peu plus vite, sans coupure
     // Safari (iPhone) refuse parfois de lancer une vidéo invisible : on l'affiche avant de la lancer.
     // Tant que sa première image n'est pas prête elle reste transparente, et l'image fixe de l'étape reste visible dessous.
     front(v);
+    // la vapeur de l'étape quittée s'efface sous le mouvement ; celle de l'étape suivante se prépare pendant qu'il se joue
+    v.addEventListener('playing', () => { if (!mine()) return; loopStop(); setTimeout(() => { if (mine()) loopPrepare(i); }, 350); }, { once: true });
     const done = () => {
-      if (playing !== v) return;
+      if (!mine()) return;
       v.removeEventListener('timeupdate', near);
       playing = null;
       if (queue.length) { arrive(i); playNext(); return; }
@@ -163,16 +191,18 @@
       // l'image fixe de l'étape est identique à la dernière image du mouvement : on peut retirer la vidéo sans que ça se voie
       setTimeout(() => { if (!playing) front(null); }, 120);
     };
-    const near = () => { if (v.duration && v.currentTime > v.duration - 0.8 && !queue.length) updateLayers(i); };
+    const near = () => { if (!mine()) { v.removeEventListener('timeupdate', near); return; } if (v.duration && v.currentTime > v.duration - 0.8 && !queue.length) updateLayers(i); };
     v.addEventListener('ended', done, { once: true });
     v.addEventListener('timeupdate', near);
     const p = v.play();
     // lecture refusée (iPhone en mode économie d'énergie) : on passe directement à l'image de l'étape
-    if (p && p.catch) p.catch(() => { if (playing === v) { playing = null; v.removeEventListener('timeupdate', near); arrive(i); playNext(); } });
+    if (p && p.catch) p.catch(() => { if (mine()) { playing = null; v.removeEventListener('timeupdate', near); arrive(i); playNext(); } });
   };
   const cutTo = (i) => {
     queue.length = 0;
     if (playing) { playing.pause(); playing = null; }
+    playId++;
+    loopStop();
     cutting = true;
     section.classList.add('is-cut');
     updateLayers();
@@ -244,22 +274,29 @@
   // Intro (en haut de page) : l'enseigne s'allume seule au chargement, puis l'image fixe de l'enseigne allumée prend le relais
   if (!reduced && S === 0) {
     const v = vids[0];
+    // l'enseigne éteinte d'abord (première image de la vidéo), puis elle s'allume doucement ; à la fin, l'image allumée prend le relais
+    still.src = src('intro-0.webp');
     v.src = src('intro.mp4');
     v.dataset.move = 'intro';
     front(v);
-    const done = () => { introDone = true; if (!playing && v.classList.contains('is-front')) front(null); };
+    const done = () => { introDone = true; if (at === 0) showStill(0); if (!playing && v.classList.contains('is-front')) setTimeout(() => { if (!playing) front(null); }, 80); };
     v.addEventListener('ended', done, { once: true });
     v.addEventListener('error', done, { once: true });
     const p = v.play();
     if (p && p.catch) p.catch(done);
   }
   // iPhone en mode économie d'énergie : les vidéos ne démarrent qu'après un premier toucher ; on les « débloque » à ce moment-là
-  const unlock = () => vids.forEach((v) => { if (v.src && v.paused && v !== playing) v.play().then(() => { if (v !== playing) v.pause(); }).catch(() => {}); });
+  const unlock = () => [...vids, loopV].forEach((v) => {
+    if (!v.src || !v.paused || v === playing) return;
+    v.play().then(() => { if (v !== playing && !(v === loopV && loopV.classList.contains('is-on'))) v.pause(); if (v === loopV && at === S) loopStart(S); }).catch(() => {});
+  });
   addEventListener('touchend', unlock, { once: true, passive: true });
   addEventListener('click', unlock, { once: true });
 
   if (S + 1 < STOPS.length) prepare(vids[1], S + 1);
   addEventListener('resize', () => place(STOPS[S].layout));
+  // onglet caché : la vapeur s'arrête ; de retour, elle reprend si l'on est arrêté sur une étape
+  document.addEventListener('visibilitychange', () => { if (document.hidden) loopStop(); else if (at === S && !playing) loopStart(S); });
   if (location.search.includes('filmdebug')) window.__film = { get step() { return S; }, get at() { return at; }, get playing() { return !!playing; }, get queue() { return queue.length; }, vids };
 
   // Liens internes : une étape du parcours passe par le film ; le reste défile en douceur
@@ -276,17 +313,17 @@
   /* ---------- Fiches détaillées : pâtes, sauces et événements, au clic ---------- */
   const DETAILS = {
     artisan: { kicker: "D'ici", title: 'Des pâtes fraîches <em>d’un artisan genevois.</em>', img: 'assets/film/still-artisan.webp?v=3',
-      text: "Nos pâtes fraîches viennent d'un artisan de Genève. Pour le reste, on choisit le circuit court dès que possible, comme le bœuf suisse de notre Bolognese. Trois recettes de famille, des sauces faites maison, et une Pasta Box qui se tient d'une main.",
-      facts: ["Pâtes fraîches d'un artisan genevois", 'Produits en circuit court dès que possible', 'Sauces faites maison, mijotées longtemps'] },
+      text: "Nos pâtes fraîches viennent d'un artisan de Genève. Pour le reste, on choisit le circuit court dès que possible : du bœuf suisse, des légumes du maraîcher. Trois recettes de famille, des sauces faites maison, et une Pasta Box qui se tient d'une main.",
+      facts: ["Pâtes fraîches d'un artisan genevois", 'Bœuf suisse et légumes du maraîcher, en circuit court dès que possible', 'Sauces faites maison, mijotées longtemps'] },
     bolognese: { kicker: 'La généreuse', title: 'Bolognese<em>.</em>', img: 'assets/film/still-bolognese.webp?v=3',
-      text: "Un ragù de bœuf suisse mijoté longtemps, comme à la maison, avec des tomates et beaucoup de patience. Une sauce faite avec amour, sans alcool, et un voile de parmesan pour finir.",
-      facts: ['Bœuf suisse, halal', 'Sans alcool', 'Mijotée longtemps, faite maison'] },
+      text: "Un ragù de bœuf suisse et de légumes du maraîcher, mijoté longtemps comme à la maison, avec des tomates et beaucoup de patience. Une sauce faite avec amour.",
+      facts: ['Bœuf suisse, halal', 'Légumes du maraîcher', 'Mijotée longtemps, faite maison'] },
     pesto: { kicker: 'La fraîche', title: 'Pesto <em>Verde.</em>', img: 'assets/film/still-pesto.webp?v=3',
       text: "Basilic frais, pignons, parmesan et huile d'olive, préparé à froid pour garder tout son parfum. La recette la plus fraîche de la maison.",
       facts: ['Végétarien', 'Préparé à froid', 'Fait maison'] },
     pomodoro: { kicker: "L'essentielle", title: 'Pomodoro<em>.</em>', img: 'assets/film/still-pomodoro.webp?v=3',
-      text: "Des tomates mijotées doucement, de l'huile d'olive et du basilic frais. Simple et généreuse, elle met tout le monde d'accord.",
-      facts: ['Vegan', 'Sans piquant', 'Mijotée longtemps, faite maison'] },
+      text: "Des tomates mijotées doucement, de l'huile d'olive et du basilic frais. Douce et généreuse, sans piquant : les enfants l'adorent, et elle met tout le monde d'accord.",
+      facts: ['Vegan', 'Kid friendly, sans piquant', 'Mijotée longtemps, faite maison'] },
   };
   const EVENTS = {
     festival: { kicker: 'Festivals', title: 'Des milliers de personnes, <em>une file qui avance.</em>', img: 'festival', type: 'Festival',
