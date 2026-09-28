@@ -93,7 +93,9 @@
   else {
     const start = () => { neon.play().then(() => { sound.play('neon'); setTimeout(showCopy, 1800); }).catch(() => { neon.poster = 'assets/img/neon-on.webp'; showCopy(); }); };
     if (neon.readyState >= 3) setTimeout(start, 500); else neon.addEventListener('canplaythrough', () => setTimeout(start, 500), { once: true });
-    setTimeout(() => { if (neon.paused && neon.currentTime === 0) { neon.poster = 'assets/img/neon-on.webp'; showCopy(); } }, 6000);
+    // sur un réseau lent, le texte n'attend pas la vidéo : il apparaît au plus tard après 3,2 s
+    setTimeout(showCopy, 3200);
+    setTimeout(() => { if (neon.paused && neon.currentTime === 0) neon.poster = 'assets/img/neon-on.webp'; }, 6000);
     // une fois allumé, un tube hésite de temps en temps, comme un vrai néon
     neon.addEventListener('ended', () => {
       const blip = () => {
