@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Jost:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="css/style.css">
-<link rel="preload" as="image" href="assets/seq/00-neon/d/001.webp" media="(min-width: 821px)">
-<link rel="preload" as="image" href="assets/seq/00-neon/m/001.webp" media="(max-width: 820px)">
+<link rel="preload" as="image" href="assets/film/d/intro-fin.webp" media="(min-width: 821px)">
+<link rel="preload" as="image" href="assets/film/m/intro-fin.webp" media="(max-width: 820px)">
 <script>
   (function () {
     var h = document.documentElement;
@@ -42,11 +42,16 @@
 
 <main>
 
-  <!-- Un seul plan-séquence, piloté par le défilement : le néon s'allume, la caméra plonge vers l'artisan,
-       rejoint les trois boxes, recule jusqu'au stand d'un festival, puis remonte vers l'enseigne. -->
+  <!-- Un seul film continu, piloté par le défilement : le néon s'allume, la caméra plonge vers l'artisan,
+       rejoint les trois boxes, recule jusqu'au stand d'un festival, puis remonte vers l'enseigne.
+       Aux étapes, la scène reste vivante (vapeur, farine, fumée) ; textes et fenêtres se posent par-dessus. -->
   <section class="immersion" id="immersion" aria-label="Le parcours Pasta Mo'">
     <div class="stage">
-      <canvas id="seqCanvas" role="img" aria-label="Plan-séquence : l'enseigne néon Pasta Mo' s'allume, la farine tombe sur les pâtes fraîches de l'artisan, puis les Pasta Box Bolognese, Pesto Verde et Pomodoro, jusqu'au stand d'un festival de nuit"></canvas>
+      <div class="stage-media" id="stageMedia" role="img" aria-label="Plan-séquence : l'enseigne néon Pasta Mo' s'allume, la farine tombe sur les pâtes fraîches de l'artisan, puis les Pasta Box Bolognese, Pesto Verde et Pomodoro, jusqu'au stand d'un festival de nuit">
+        <video class="stage-video v-intro" id="introVideo" muted playsinline preload="auto" disablepictureinpicture></video>
+        <video class="stage-video v-film" id="filmVideo" muted playsinline preload="none" disablepictureinpicture></video>
+        <video class="stage-video v-ambient" id="ambientVideo" muted playsinline loop preload="none" disablepictureinpicture></video>
+      </div>
       <div class="stage-shade" aria-hidden="true"></div>
     </div>
 
@@ -60,6 +65,21 @@
     <span class="mark" id="histoire" data-mark="histoire"></span>
 
     <div class="layers">
+      <!-- ligne de progression : où l'on en est dans le parcours, chaque étape est cliquable -->
+      <div class="layer layer-journey is-on">
+        <nav class="journey" aria-label="Étapes du parcours">
+          <span class="journey-track" aria-hidden="true"><i id="journeyFill"></i></span>
+          <a href="#top" data-stop="intro"><span>Accueil</span></a>
+          <a href="#artisan" data-stop="artisan"><span>D'ici</span></a>
+          <a href="#bolognese" data-stop="bolognese"><span>Bolognese</span></a>
+          <a href="#pesto" data-stop="pesto"><span>Pesto Verde</span></a>
+          <a href="#pomodoro" data-stop="pomodoro"><span>Pomodoro</span></a>
+          <a href="#evenements" data-stop="evenements"><span>Événements</span></a>
+          <a href="#histoire" data-stop="histoire"><span>Notre histoire</span></a>
+        </nav>
+        <p class="film-loading" id="filmLoading" aria-hidden="true"><span>Chargement du film</span><i></i></p>
+      </div>
+
       <div class="layer layer-intro" data-show="intro">
         <p class="eyebrow">Street food italienne · Genève</p>
         <h1 class="hero-title">Fait maison. <em>Là pour rassembler.</em></h1>
@@ -174,7 +194,6 @@
   <p class="footer-small">Produits locaux · Savoir-faire italien · 2026</p>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script src="js/main.js" defer></script>
 </body>
 </html>
