@@ -91,7 +91,9 @@
   const journeyFill = document.getElementById('journeyFill');
   const loadingEl = document.getElementById('filmLoading');
   const nextBtn = document.getElementById('nextStep');
-  const src = (name) => `assets/film/${variant}/${name}`;
+  // numéro de version : à changer à chaque nouveau film, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '3';
+  const src = (name) => `assets/film/${variant}/${name}?v=${FILM_V}`;
   windows.forEach((w, i) => w.style.setProperty('--i', i));
 
   const ease = (x) => x * x * (3 - 2 * x);
@@ -340,16 +342,16 @@
 
   /* ---------- Fiches détaillées : pâtes, sauces et événements, au clic ---------- */
   const DETAILS = {
-    artisan: { kicker: "D'ici", title: 'Des pâtes fraîches <em>d’un artisan genevois.</em>', img: 'assets/film/still-artisan.webp',
+    artisan: { kicker: "D'ici", title: 'Des pâtes fraîches <em>d’un artisan genevois.</em>', img: 'assets/film/still-artisan.webp?v=3',
       text: "Nos pâtes fraîches viennent d'un artisan de Genève. Pour le reste, on choisit le circuit court dès que possible, comme le bœuf suisse de notre Bolognese. Trois recettes de famille, des sauces faites maison, et une Pasta Box qui se tient d'une main.",
       facts: ["Pâtes fraîches d'un artisan genevois", 'Produits en circuit court dès que possible', 'Sauces faites maison, mijotées longtemps'] },
-    bolognese: { kicker: 'La généreuse', title: 'Bolognese<em>.</em>', img: 'assets/film/still-bolognese.webp',
+    bolognese: { kicker: 'La généreuse', title: 'Bolognese<em>.</em>', img: 'assets/film/still-bolognese.webp?v=3',
       text: "Un ragù de bœuf suisse mijoté longtemps, comme à la maison, avec des tomates et beaucoup de patience. Une sauce faite avec amour, sans alcool, et un voile de parmesan pour finir.",
       facts: ['Bœuf suisse, halal', 'Sans alcool', 'Mijotée longtemps, faite maison'] },
-    pesto: { kicker: 'La fraîche', title: 'Pesto <em>Verde.</em>', img: 'assets/film/still-pesto.webp',
+    pesto: { kicker: 'La fraîche', title: 'Pesto <em>Verde.</em>', img: 'assets/film/still-pesto.webp?v=3',
       text: "Basilic frais, pignons, parmesan et huile d'olive, préparé à froid pour garder tout son parfum. La recette la plus fraîche de la maison.",
       facts: ['Végétarien', 'Préparé à froid', 'Fait maison'] },
-    pomodoro: { kicker: "L'essentielle", title: 'Pomodoro<em>.</em>', img: 'assets/film/still-pomodoro.webp',
+    pomodoro: { kicker: "L'essentielle", title: 'Pomodoro<em>.</em>', img: 'assets/film/still-pomodoro.webp?v=3',
       text: "Des tomates mijotées doucement, de l'huile d'olive et du basilic frais. Simple et généreuse, elle met tout le monde d'accord.",
       facts: ['Vegan', 'Sans piquant', 'Mijotée longtemps, faite maison'] },
   };
