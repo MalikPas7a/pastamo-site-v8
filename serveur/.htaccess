@@ -1,0 +1,32 @@
+# Pasta Mo' : en-têtes de sécurité et cache pour un hébergement Apache (à placer à la racine du site).
+# GitHub Pages n'applique pas ce fichier : la politique de sécurité (CSP) y est déjà dans la page (balise meta).
+
+<IfModule mod_headers.c>
+  # Forcer HTTPS pendant un an (à n'activer qu'une fois le site servi en HTTPS sur son domaine définitif)
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  # Politique de sécurité : uniquement nos fichiers, plus les polices Google ; interdiction d'être affiché dans un cadre
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests"
+  Header always set X-Frame-Options "DENY"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+  # Ne pas annoncer la version du serveur
+  Header unset X-Powered-By
+</IfModule>
+ServerSignature Off
+Options -Indexes
+
+# Cache : les vidéos et images changent de nom de version (?v=…) à chaque nouveau montage
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType video/mp4 "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+# Les vidéos doivent accepter les requêtes partielles (Range) : c'est le cas par défaut sur Apache
+AddType video/mp4 .mp4
+AddType image/webp .webp

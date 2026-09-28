@@ -2,30 +2,23 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Pasta Mo' · Street food italienne pour vos événements · Genève</title>
 <meta name="description" content="Pasta Mo' installe son stand de street food italienne sur vos festivals, événements sportifs, événements d'entreprise, marchés et fêtes privées. Pâtes fraîches d'un artisan genevois, trois sauces faites maison, servies chaudes et vite.">
 <meta name="theme-color" content="#0b0908">
-<link rel="icon" href="assets/logo.svg?v=5" type="image/svg+xml">
+<link rel="icon" href="assets/logo.svg?v=6" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Jost:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="css/style.css?v=5">
-<link rel="preload" as="image" href="assets/film/d/stop-0.webp?v=5" media="(min-width: 821px)">
-<link rel="preload" as="image" href="assets/film/m/stop-0.webp?v=5" media="(max-width: 820px)">
-<script>
-  (function () {
-    var h = document.documentElement;
-    h.classList.add(matchMedia('(max-width: 820px), (pointer: coarse)').matches ? 'is-mobile' : 'is-desktop');
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) h.classList.add('is-reduced');
-  })();
-</script>
+<link rel="stylesheet" href="css/style.min.css?v=6">
 </head>
 <body>
 
 <header class="nav" id="nav">
-  <a href="#top" class="nav-logo" aria-label="Pasta Mo', retour en haut"><img src="assets/logo.svg?v=5" alt="Pasta Mo'" width="144" height="38"></a>
+  <a href="#top" class="nav-logo" aria-label="Pasta Mo', retour en haut"><img src="assets/logo.svg?v=6" alt="Pasta Mo'" width="144" height="38"></a>
   <nav class="nav-links" aria-label="Parcours">
     <a href="#artisan">D'ici</a>
     <a href="#bolognese">Les recettes</a>
@@ -176,15 +169,17 @@
       <p class="contact-lines"><a href="mailto:malik@pastamo.ch">malik@pastamo.ch</a><a href="tel:+41782133868">078 213 38 68</a></p>
     </div>
     <form class="form" id="bookForm" method="post" action="mailto:malik@pastamo.ch" enctype="text/plain" novalidate>
-      <label>Nom<input name="nom" required autocomplete="name"></label>
-      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Nom<input name="nom" required autocomplete="name" maxlength="80"></label>
+      <label>Email<input name="email" type="email" required autocomplete="email" maxlength="120"></label>
       <label>Type d'événement
         <select name="type"><option>Festival</option><option>Événement sportif</option><option>Entreprise / B2B</option><option>Fête communale / marché</option><option>Événement privé</option></select>
       </label>
       <label>Date<input name="date" type="date"></label>
-      <label>Lieu<input name="lieu" autocomplete="address-level2"></label>
-      <label>Personnes (estimation)<input name="personnes" type="number" min="10" step="10" inputmode="numeric"></label>
-      <label class="full">Votre message<textarea name="message" rows="3"></textarea></label>
+      <label>Lieu<input name="lieu" autocomplete="address-level2" maxlength="120"></label>
+      <label>Personnes (estimation)<input name="personnes" type="number" min="10" max="100000" step="10" inputmode="numeric"></label>
+      <label class="full">Votre message<textarea name="message" rows="3" maxlength="1500"></textarea></label>
+      <!-- champ piège anti-spam : invisible pour les visiteurs, rempli seulement par les robots -->
+      <label class="hp" aria-hidden="true">Site web<input name="site" tabindex="-1" autocomplete="off"></label>
       <button class="btn btn-gold full" type="submit">Préparer ma demande</button>
       <div class="form-out full" id="formOut" hidden>
         <p>Votre demande est prête à envoyer à malik@pastamo.ch</p>
@@ -199,11 +194,11 @@
 </main>
 
 <footer class="footer">
-  <img src="assets/logo.svg?v=5" alt="Pasta Mo'" width="181" height="48">
+  <img src="assets/logo.svg?v=6" alt="Pasta Mo'" width="181" height="48">
   <p>Street food italienne · Genève</p>
   <p class="footer-small">Produits locaux · Savoir-faire italien · 2026</p>
 </footer>
 
-<script src="js/main.js?v=5" defer></script>
+<script src="js/main.min.js?v=6" defer></script>
 </body>
 </html>

@@ -1,7 +1,9 @@
 (() => {
   const root = document.documentElement;
-  const isDesktop = root.classList.contains('is-desktop');
-  const reduced = root.classList.contains('is-reduced');
+  const isDesktop = !matchMedia('(max-width: 820px), (pointer: coarse)').matches;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.classList.add(isDesktop ? 'is-desktop' : 'is-mobile');
+  if (reduced) root.classList.add('is-reduced');
   const phone = !matchMedia('(min-width: 821px)').matches;
   const variant = phone ? 'm' : 'd';
 
@@ -73,7 +75,7 @@
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '5'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '6'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   const src = (name) => `assets/film/${variant}/${name}?v=${FILM_V}`;
 
   const section = document.getElementById('immersion');
@@ -139,7 +141,7 @@
     v.load();
   };
   /* Vapeur à l'arrêt : boucle de l'étape, dont la première image est l'image fixe elle-même (aucun saut) */
-  let loopFor = null;
+  let loopFor = null, loopGen = 0;
   const loopPrepare = (i) => {
     if (reduced || !STOPS[i] || !STOPS[i].loop || loopFor === i) return;
     loopFor = i;
@@ -148,15 +150,25 @@
     loopV.preload = 'auto';
     loopV.load();
   };
+  // chaque départ ou arrêt de la vapeur a son numéro : une pause prévue par un ancien arrêt ne peut pas couper la nouvelle vapeur
+  // (c'est ce qui figeait l'image après un retour en arrière sur iPhone)
   const loopStart = (i) => {
     if (reduced || !STOPS[i].loop) return;
+    const gen = ++loopGen;
     loopPrepare(i);
     try { loopV.currentTime = 0; } catch (e) { /* pas encore chargée */ }
+    // Safari (iPhone) peut refuser de lancer une vidéo invisible : on commence le fondu d'apparition avant de la lancer
+    // (tant qu'elle n'a pas démarré, elle reste transparente et l'image fixe reste visible dessous)
+    loopV.classList.add('is-on');
     const p = loopV.play();
-    const show = () => { if (at === i && !playing && S === i) loopV.classList.add('is-on'); };
-    if (p && p.then) p.then(() => (loopV.readyState >= 2 ? show() : loopV.addEventListener('playing', show, { once: true })), () => {});
+    const fail = () => { if (gen === loopGen) loopV.classList.remove('is-on'); };
+    if (p && p.then) p.then(() => { if (gen !== loopGen || at !== i || playing || S !== i) fail(); }, fail);
   };
-  const loopStop = () => { loopV.classList.remove('is-on'); setTimeout(() => { if (!loopV.classList.contains('is-on')) loopV.pause(); }, 300); };
+  const loopStop = () => {
+    const gen = ++loopGen;
+    loopV.classList.remove('is-on');
+    setTimeout(() => { if (gen === loopGen) loopV.pause(); }, 450);
+  };
 
   const arrive = (i) => {
     at = i;
@@ -294,7 +306,20 @@
   addEventListener('click', unlock, { once: true });
 
   if (S + 1 < STOPS.length) prepare(vids[1], S + 1);
-  addEventListener('resize', () => place(STOPS[S].layout));
+  // Redimensionnement ou rotation : on recale le cadre et on reste sur la même étape (le navigateur recale le défilement,
+  // ce qui ne doit pas déclencher de mouvement vers l'étape voisine)
+  let resizeTimer = 0, lastW = innerWidth;
+  addEventListener('resize', () => {
+    place(STOPS[S].layout);
+    // sur iPhone, la barre d'adresse qui se replie pendant le défilement change seulement la hauteur : on ne touche à rien
+    if (innerWidth === lastW) return;
+    lastW = innerWidth;
+    clearTimeout(resizeTimer);
+    holdScroll(700);
+    resizeTimer = setTimeout(() => {
+      if (section.getBoundingClientRect().bottom > innerHeight * 0.5) window.scrollTo(0, steps[S].getBoundingClientRect().top + window.scrollY);
+    }, 150);
+  });
   // onglet caché : la vapeur s'arrête ; de retour, elle reprend si l'on est arrêté sur une étape
   document.addEventListener('visibilitychange', () => { if (document.hidden) loopStop(); else if (at === S && !playing) loopStart(S); });
   if (location.search.includes('filmdebug')) window.__film = { get step() { return S; }, get at() { return at; }, get playing() { return !!playing; }, get queue() { return queue.length; }, vids };
@@ -345,15 +370,23 @@
   const dialog = document.getElementById('eventDialog');
   const $ = (id) => document.getElementById(id);
   let opener = null, chosenType = null;
+  // titres : seul <em>…</em> est reconnu, tout le reste est inséré comme du texte (jamais interprété comme du HTML)
+  const setTitle = (el, str) => {
+    el.replaceChildren(...str.split(/(<em>.*?<\/em>)/).filter(Boolean).map((part) => {
+      const m = /^<em>(.*)<\/em>$/.exec(part);
+      if (!m) return document.createTextNode(part);
+      const em = document.createElement('em'); em.textContent = m[1]; return em;
+    }));
+  };
   const openDetail = (d, img, ctaLabel) => {
     $('eventKicker').textContent = d.kicker;
-    $('eventTitle').innerHTML = d.title;
+    setTitle($('eventTitle'), d.title);
     $('eventText').textContent = d.text;
-    $('eventFacts').innerHTML = d.facts.map((f) => `<li>${f}</li>`).join('');
+    $('eventFacts').replaceChildren(...d.facts.map((f) => { const li = document.createElement('li'); li.textContent = f; return li; }));
     $('eventImg').src = img;
     $('eventImg').alt = d.kicker;
     $('eventCta').textContent = ctaLabel;
-    dialog.showModal();
+    if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); // anciens navigateurs sans <dialog>
   };
   windows.forEach((w) => w.addEventListener('click', () => {
     const d = EVENTS[w.dataset.event];
@@ -365,7 +398,7 @@
     opener = c; chosenType = null;
     openDetail(d, d.img, 'Faire venir Pasta Mo');
   }));
-  const closeDialog = () => dialog.close();
+  const closeDialog = () => { if (dialog.close) dialog.close(); else { dialog.removeAttribute('open'); dialog.dispatchEvent(new Event('close')); } };
   $('eventClose').addEventListener('click', closeDialog);
   dialog.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
   dialog.addEventListener('close', () => opener?.focus({ preventScroll: true }));
@@ -373,7 +406,7 @@
     e.preventDefault();
     const sel = document.querySelector('#bookForm select[name="type"]');
     if (sel && chosenType) sel.value = chosenType;
-    dialog.close();
+    closeDialog();
     holdScroll(1200);
     scrollToY(contact.getBoundingClientRect().top + window.scrollY);
   });
@@ -383,10 +416,19 @@
   const out = document.getElementById('formOut');
   const text = document.getElementById('formText');
   const mail = document.getElementById('formMail');
+  // anti-spam invisible : un champ piège que seuls les robots remplissent, et un délai minimum avant l'envoi
+  const shownAt = Date.now();
+  const clean = (v, max) => String(v || '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim().slice(0, max);
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (form.elements.site && form.elements.site.value) return; // robot : on ne prépare rien
+    if (Date.now() - shownAt < 2000) return;
     if (!form.reportValidity()) return;
-    const d = Object.fromEntries(new FormData(form));
+    const raw = Object.fromEntries(new FormData(form));
+    const d = { type: clean(raw.type, 40), nom: clean(raw.nom, 80), email: clean(raw.email, 120), date: clean(raw.date, 10),
+      lieu: clean(raw.lieu, 120), personnes: clean(raw.personnes, 6), message: clean(raw.message, 1500) };
+    if (d.date && !/^\d{4}-\d{2}-\d{2}$/.test(d.date)) d.date = '';
+    if (d.personnes && !/^\d+$/.test(d.personnes)) d.personnes = '';
     const date = d.date ? new Date(d.date + 'T12:00').toLocaleDateString('fr-CH', { day: 'numeric', month: 'long', year: 'numeric' }) : 'à définir';
     const body = [
       "Bonjour Pasta Mo',", '',
