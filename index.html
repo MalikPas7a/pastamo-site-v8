@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Pasta Mo' · Street food italienne pour vos événements · Genève</title>
-<meta name="description" content="Pasta Mo' installe son stand de street food italienne sur vos festivals, courses, événements d'entreprise, marchés et fêtes privées. Pâtes fraîches d'un artisan genevois, trois sauces maison, servies chaudes et vite.">
+<meta name="description" content="Pasta Mo' installe son stand de street food italienne sur vos festivals, événements sportifs, événements d'entreprise, marchés et fêtes privées. Pâtes fraîches d'un artisan genevois, trois sauces faites maison, servies chaudes et vite.">
 <meta name="theme-color" content="#0b0908">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,12 +42,12 @@
 
 <main>
 
-  <!-- Un seul film continu, piloté par le défilement : le néon s'allume, la caméra plonge vers l'artisan,
-       rejoint les trois boxes, recule jusqu'au stand d'un festival, puis remonte vers l'enseigne.
-       Aux étapes, la scène reste vivante (vapeur, farine, fumée) ; textes et fenêtres se posent par-dessus. -->
+  <!-- Un seul film continu en sept étapes : le néon s'allume, la caméra plonge vers les pâtes fraîches, glisse le long
+       du comptoir jusqu'aux trois boxes, recule jusqu'au stand d'un festival, puis remonte vers l'enseigne.
+       Un geste (défilement, glissement, « Suivant ») passe à l'étape suivante ; à l'arrêt, la scène reste vivante. -->
   <section class="immersion" id="immersion" aria-label="Le parcours Pasta Mo'">
     <div class="stage">
-      <div class="stage-media" id="stageMedia" role="img" aria-label="Plan-séquence : l'enseigne néon Pasta Mo' s'allume, la farine tombe sur les pâtes fraîches de l'artisan, puis les Pasta Box Bolognese, Pesto Verde et Pomodoro, jusqu'au stand d'un festival de nuit">
+      <div class="stage-media" id="stageMedia" role="img" aria-label="Plan-séquence : l'enseigne néon Pasta Mo' s'allume, la caméra rejoint les pâtes fraîches sur le comptoir, puis les Pasta Box Bolognese, Pesto Verde et Pomodoro, jusqu'au stand d'un festival de nuit">
         <video class="stage-video v-intro" id="introVideo" muted playsinline preload="auto" disablepictureinpicture></video>
         <video class="stage-video v-film" id="filmVideo" muted playsinline preload="none" disablepictureinpicture></video>
         <video class="stage-video v-ambient" id="ambientVideo" muted playsinline loop preload="none" disablepictureinpicture></video>
@@ -55,17 +55,19 @@
       <div class="stage-shade" aria-hidden="true"></div>
     </div>
 
-    <!-- repères pour la navigation (positions en hauteurs d'écran, calculées par le script) -->
-    <span class="mark" id="top" data-mark="intro"></span>
-    <span class="mark" id="artisan" data-mark="artisan"></span>
-    <span class="mark" id="bolognese" data-mark="bolognese"></span>
-    <span class="mark" id="pesto" data-mark="pesto"></span>
-    <span class="mark" id="pomodoro" data-mark="pomodoro"></span>
-    <span class="mark" id="evenements" data-mark="evenements"></span>
-    <span class="mark" id="histoire" data-mark="histoire"></span>
+    <!-- une étape par écran : le navigateur s'y cale, et chaque changement d'écran lance le mouvement suivant -->
+    <div class="steps">
+      <div class="step" id="top"></div>
+      <div class="step" id="artisan"></div>
+      <div class="step" id="bolognese"></div>
+      <div class="step" id="pesto"></div>
+      <div class="step" id="pomodoro"></div>
+      <div class="step" id="evenements"></div>
+      <div class="step" id="histoire"></div>
+    </div>
 
     <div class="layers">
-      <!-- ligne de progression : où l'on en est dans le parcours, chaque étape est cliquable -->
+      <!-- ligne de progression et bouton « Suivant » -->
       <div class="layer layer-journey is-on">
         <nav class="journey" aria-label="Étapes du parcours">
           <span class="journey-track" aria-hidden="true"><i id="journeyFill"></i></span>
@@ -78,60 +80,68 @@
           <a href="#histoire" data-stop="histoire"><span>Notre histoire</span></a>
         </nav>
         <p class="film-loading" id="filmLoading" aria-hidden="true"><span>Chargement du film</span><i></i></p>
+        <button class="next-step" id="nextStep" type="button"><span>Suivant</span></button>
       </div>
 
       <div class="layer layer-intro" data-show="intro">
         <p class="eyebrow">Street food italienne · Genève</p>
         <h1 class="hero-title">Fait maison. <em>Là pour rassembler.</em></h1>
-        <p class="hero-sub">Pâtes fraîches artisanales de Genève, sauces préparées en Suisse. Servies chaudes et vite sur vos festivals, marathons, tournois, fêtes communales et événements d'entreprise.</p>
+        <p class="hero-sub">Des pâtes fraîches d'un artisan genevois, des sauces faites maison et mijotées longtemps. Servies chaudes et vite sur vos festivals, événements sportifs, fêtes communales et événements d'entreprise.</p>
         <div class="hero-actions">
           <a href="#contact" class="btn btn-gold">Faire venir Pasta Mo</a>
           <a href="#artisan" class="btn btn-line">Entrer</a>
         </div>
-        <p class="scroll-hint" aria-hidden="true">Faites défiler</p>
+        <p class="scroll-hint" aria-hidden="true"><span class="on-desk">Faites défiler</span><span class="on-touch">Glissez vers le haut</span></p>
       </div>
 
+      <!-- à chaque étape : le nom en grand, et le détail au clic -->
       <div class="layer layer-side" data-show="artisan">
-        <p class="eyebrow"><span class="num">01</span> D'ici</p>
-        <h2 class="title">Des pâtes fraîches d'un artisan genevois. <em>Des sauces préparées en Suisse.</em></h2>
-        <p class="lead">Une carte courte, trois recettes de famille, une Pasta Box qui se tient d'une main.</p>
+        <button class="stop-card" type="button" data-detail="artisan" aria-haspopup="dialog">
+          <span class="eyebrow"><span class="num">01</span> D'ici</span>
+          <span class="stop-title">Pâtes fraîches <em>d'un artisan genevois.</em></span>
+          <span class="stop-more">Découvrir</span>
+        </button>
       </div>
 
       <div class="layer layer-side" data-show="bolognese">
-        <p class="eyebrow"><span class="num">02</span> La généreuse</p>
-        <h2 class="title">Bolognese<em>.</em></h2>
-        <p class="lead">Un ragù de bœuf halal mijoté longuement en Suisse, sans alcool. Le dernier geste : un voile de parmesan.</p>
-        <p class="box-tags"><span>Bœuf halal</span><span>Sans alcool</span></p>
+        <button class="stop-card" type="button" data-detail="bolognese" aria-haspopup="dialog">
+          <span class="eyebrow"><span class="num">02</span> La généreuse</span>
+          <span class="stop-title">Bolognese<em>.</em></span>
+          <span class="box-tags"><span>Bœuf suisse</span><span>Halal</span><span>Sans alcool</span></span>
+          <span class="stop-more">Découvrir la recette</span>
+        </button>
       </div>
 
       <div class="layer layer-side" data-show="pesto">
-        <p class="eyebrow"><span class="num">03</span> La fraîche</p>
-        <h2 class="title">Pesto <em>Verde.</em></h2>
-        <p class="lead">Basilic frais, pignons, parmesan et huile d'olive, préparé à froid en Suisse pour garder toute sa fraîcheur.</p>
-        <p class="box-tags"><span>Végétarien</span><span>Préparé à froid</span></p>
+        <button class="stop-card" type="button" data-detail="pesto" aria-haspopup="dialog">
+          <span class="eyebrow"><span class="num">03</span> La fraîche</span>
+          <span class="stop-title">Pesto <em>Verde.</em></span>
+          <span class="box-tags"><span>Végétarien</span><span>Préparé à froid</span></span>
+          <span class="stop-more">Découvrir la recette</span>
+        </button>
       </div>
 
       <div class="layer layer-side" data-show="pomodoro">
-        <p class="eyebrow"><span class="num">04</span> L'essentielle</p>
-        <h2 class="title">Pomodoro<em>.</em></h2>
-        <p class="lead">Des tomates mijotées doucement en Suisse, de l'huile d'olive et du basilic. Douce et généreuse, elle met tout le monde d'accord.</p>
-        <p class="box-tags"><span>Vegan</span><span>Sans piquant</span></p>
-      </div>
-
-      <div class="layer layer-side" data-show="stand">
-        <p class="eyebrow"><span class="num">05</span> Vos événements</p>
-        <h2 class="title">On s'installe <em>là où vous êtes.</em></h2>
-        <p class="lead">Un stand compact, une carte courte, jusqu'à 150 portions par heure et par poste, de la fête de quartier au grand festival.</p>
+        <button class="stop-card" type="button" data-detail="pomodoro" aria-haspopup="dialog">
+          <span class="eyebrow"><span class="num">04</span> L'essentielle</span>
+          <span class="stop-title">Pomodoro<em>.</em></span>
+          <span class="box-tags"><span>Vegan</span><span>Sans piquant</span></span>
+          <span class="stop-more">Découvrir la recette</span>
+        </button>
       </div>
 
       <div class="layer layer-windows" data-show="evenements">
-        <p class="windows-hint" id="windowsHint">Choisissez votre événement</p>
-        <div class="windows" id="windows" role="group" aria-labelledby="windowsHint">
-          <button class="window" type="button" data-event="festival" aria-haspopup="dialog"><img src="assets/fenetres/festival-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Festivals</span><span class="window-line">Grosses affluences, longues soirées</span></button>
-          <button class="window" type="button" data-event="marathon" aria-haspopup="dialog"><img src="assets/fenetres/marathon-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Marathons &amp; tournois</span><span class="window-line">Le repas d'après l'effort</span></button>
-          <button class="window" type="button" data-event="entreprise" aria-haspopup="dialog"><img src="assets/fenetres/entreprise-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Entreprises &amp; B2B</span><span class="window-line">Afterworks, séminaires, portes ouvertes</span></button>
-          <button class="window" type="button" data-event="fete" aria-haspopup="dialog"><img src="assets/fenetres/fete-communale-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Fêtes communales &amp; marchés</span><span class="window-line">Une grande tablée de quartier</span></button>
-          <button class="window" type="button" data-event="prive" aria-haspopup="dialog"><img src="assets/fenetres/prive-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Événements privés</span><span class="window-line">Mariages, anniversaires, fêtes de famille</span></button>
+        <div class="events-panel">
+          <p class="eyebrow"><span class="num">05</span> Vos événements</p>
+          <h2 class="events-title">On s'installe <em>là où vous êtes.</em></h2>
+          <p class="events-line">Jusqu'à 150 portions par heure et par poste, de la fête de quartier au grand festival. <span class="windows-hint" id="windowsHint">Choisissez votre événement :</span></p>
+          <div class="windows" id="windows" role="group" aria-labelledby="windowsHint">
+            <button class="window" type="button" data-event="festival" aria-haspopup="dialog"><img src="assets/fenetres/festival-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Festivals</span><span class="window-line">Grosses affluences, longues soirées</span></button>
+            <button class="window" type="button" data-event="sport" aria-haspopup="dialog"><img src="assets/fenetres/marathon-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Événements sportifs</span><span class="window-line">Des glucides pour bien récupérer</span></button>
+            <button class="window" type="button" data-event="entreprise" aria-haspopup="dialog"><img src="assets/fenetres/entreprise-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Entreprises &amp; B2B</span><span class="window-line">Afterworks, séminaires, portes ouvertes</span></button>
+            <button class="window" type="button" data-event="fete" aria-haspopup="dialog"><img src="assets/fenetres/fete-communale-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Fêtes communales &amp; marchés</span><span class="window-line">Une grande tablée de quartier</span></button>
+            <button class="window" type="button" data-event="prive" aria-haspopup="dialog"><img src="assets/fenetres/prive-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Événements privés</span><span class="window-line">Mariages, anniversaires, fêtes de famille</span></button>
+          </div>
         </div>
       </div>
 
@@ -144,7 +154,7 @@
     </div>
   </section>
 
-  <!-- Détail d'un événement, ouvert depuis une fenêtre -->
+  <!-- Détail d'une étape (pâtes, sauces) ou d'un événement, ouvert au clic -->
   <dialog class="event-dialog" id="eventDialog" aria-labelledby="eventTitle">
     <button class="dialog-close" type="button" id="eventClose" aria-label="Fermer">×</button>
     <img id="eventImg" src="" alt="" width="1200" height="896">
@@ -169,7 +179,7 @@
       <label>Nom<input name="nom" required autocomplete="name"></label>
       <label>Email<input name="email" type="email" required autocomplete="email"></label>
       <label>Type d'événement
-        <select name="type"><option>Festival</option><option>Marathon / course</option><option>Tournoi sportif</option><option>Entreprise / B2B</option><option>Fête communale / marché</option><option>Événement privé</option></select>
+        <select name="type"><option>Festival</option><option>Événement sportif</option><option>Entreprise / B2B</option><option>Fête communale / marché</option><option>Événement privé</option></select>
       </label>
       <label>Date<input name="date" type="date"></label>
       <label>Lieu<input name="lieu" autocomplete="address-level2"></label>
