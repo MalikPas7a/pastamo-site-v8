@@ -12,7 +12,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Jost:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="css/style.css">
-<link rel="preload" as="image" href="assets/img/neon-off.webp">
+<link rel="preload" as="image" href="assets/seq/00-neon/d/001.webp" media="(min-width: 821px)">
+<link rel="preload" as="image" href="assets/seq/00-neon/m/001.webp" media="(max-width: 820px)">
 <script>
   (function () {
     var h = document.documentElement;
@@ -25,10 +26,10 @@
 
 <header class="nav" id="nav">
   <a href="#top" class="nav-logo" aria-label="Pasta Mo', retour en haut"><img src="assets/logo.svg" alt="Pasta Mo'" width="150" height="38"></a>
-  <nav class="nav-links" aria-label="Sections">
-    <a href="#box">La box</a>
+  <nav class="nav-links" aria-label="Parcours">
+    <a href="#artisan">D'ici</a>
+    <a href="#bolognese">Les recettes</a>
     <a href="#evenements">Événements</a>
-    <a href="#stand">Le stand</a>
     <a href="#histoire">Notre histoire</a>
   </nav>
   <div class="nav-right">
@@ -41,120 +42,100 @@
 
 <main>
 
-  <!-- 1. Ouverture : l'enseigne néon s'allume -->
-  <section class="hero" id="top">
-    <div class="hero-media">
-      <video id="neonVideo" muted playsinline preload="auto" poster="assets/img/neon-off.webp" aria-label="L'enseigne néon Pasta Mo' s'allume"></video>
+  <!-- Un seul plan-séquence, piloté par le défilement : le néon s'allume, la caméra plonge vers l'artisan,
+       rejoint les trois boxes, recule jusqu'au stand d'un festival, puis remonte vers l'enseigne. -->
+  <section class="immersion" id="immersion" aria-label="Le parcours Pasta Mo'">
+    <div class="stage">
+      <canvas id="seqCanvas" role="img" aria-label="Plan-séquence : l'enseigne néon Pasta Mo' s'allume, la farine tombe sur les pâtes fraîches de l'artisan, puis les Pasta Box Bolognese, Pesto Verde et Pomodoro, jusqu'au stand d'un festival de nuit"></canvas>
+      <div class="stage-shade" aria-hidden="true"></div>
     </div>
-    <div class="hero-copy">
-      <p class="eyebrow">Street food italienne · Genève</p>
-      <h1 class="hero-title">Fait maison. <em>Là pour rassembler.</em></h1>
-      <p class="hero-sub">Pâtes fraîches artisanales de Genève, sauces préparées en Suisse. Servies chaudes et vite sur vos festivals, marathons, tournois, fêtes communales et événements d'entreprise.</p>
-      <div class="hero-actions">
-        <a href="#contact" class="btn btn-gold">Faire venir Pasta Mo</a>
-        <a href="#box" class="btn btn-line">Voir la box</a>
+
+    <!-- repères pour la navigation (positions en hauteurs d'écran, calculées par le script) -->
+    <span class="mark" id="top" data-mark="intro"></span>
+    <span class="mark" id="artisan" data-mark="artisan"></span>
+    <span class="mark" id="bolognese" data-mark="bolognese"></span>
+    <span class="mark" id="pesto" data-mark="pesto"></span>
+    <span class="mark" id="pomodoro" data-mark="pomodoro"></span>
+    <span class="mark" id="evenements" data-mark="evenements"></span>
+    <span class="mark" id="histoire" data-mark="histoire"></span>
+
+    <div class="layers">
+      <div class="layer layer-intro" data-show="intro">
+        <p class="eyebrow">Street food italienne · Genève</p>
+        <h1 class="hero-title">Fait maison. <em>Là pour rassembler.</em></h1>
+        <p class="hero-sub">Pâtes fraîches artisanales de Genève, sauces préparées en Suisse. Servies chaudes et vite sur vos festivals, marathons, tournois, fêtes communales et événements d'entreprise.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-gold">Faire venir Pasta Mo</a>
+          <a href="#artisan" class="btn btn-line">Entrer</a>
+        </div>
+        <p class="scroll-hint" aria-hidden="true">Faites défiler</p>
+      </div>
+
+      <div class="layer layer-side" data-show="artisan">
+        <p class="eyebrow"><span class="num">01</span> D'ici</p>
+        <h2 class="title">Des pâtes fraîches d'un artisan genevois. <em>Des sauces préparées en Suisse.</em></h2>
+        <p class="lead">Une carte courte, trois recettes de famille, une Pasta Box qui se tient d'une main.</p>
+      </div>
+
+      <div class="layer layer-side" data-show="bolognese">
+        <p class="eyebrow"><span class="num">02</span> La généreuse</p>
+        <h2 class="title">Bolognese<em>.</em></h2>
+        <p class="lead">Un ragù de bœuf halal mijoté longuement en Suisse, sans alcool. Le dernier geste : un voile de parmesan.</p>
+        <p class="box-tags"><span>Bœuf halal</span><span>Sans alcool</span></p>
+      </div>
+
+      <div class="layer layer-side" data-show="pesto">
+        <p class="eyebrow"><span class="num">03</span> La fraîche</p>
+        <h2 class="title">Pesto <em>Verde.</em></h2>
+        <p class="lead">Basilic frais, pignons, parmesan et huile d'olive, préparé à froid en Suisse pour garder toute sa fraîcheur.</p>
+        <p class="box-tags"><span>Végétarien</span><span>Préparé à froid</span></p>
+      </div>
+
+      <div class="layer layer-side" data-show="pomodoro">
+        <p class="eyebrow"><span class="num">04</span> L'essentielle</p>
+        <h2 class="title">Pomodoro<em>.</em></h2>
+        <p class="lead">Des tomates mijotées doucement en Suisse, de l'huile d'olive et du basilic. Douce et généreuse, elle met tout le monde d'accord.</p>
+        <p class="box-tags"><span>Vegan</span><span>Sans piquant</span></p>
+      </div>
+
+      <div class="layer layer-side" data-show="stand">
+        <p class="eyebrow"><span class="num">05</span> Vos événements</p>
+        <h2 class="title">On s'installe <em>là où vous êtes.</em></h2>
+        <p class="lead">Un stand compact, une carte courte, jusqu'à 150 portions par heure et par poste, de la fête de quartier au grand festival.</p>
+      </div>
+
+      <div class="layer layer-windows" data-show="evenements">
+        <p class="windows-hint" id="windowsHint">Choisissez votre événement</p>
+        <div class="windows" id="windows" role="group" aria-labelledby="windowsHint">
+          <button class="window" type="button" data-event="festival" aria-haspopup="dialog"><img src="assets/fenetres/festival-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Festivals</span><span class="window-line">Grosses affluences, longues soirées</span></button>
+          <button class="window" type="button" data-event="marathon" aria-haspopup="dialog"><img src="assets/fenetres/marathon-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Marathons &amp; tournois</span><span class="window-line">Le repas d'après l'effort</span></button>
+          <button class="window" type="button" data-event="entreprise" aria-haspopup="dialog"><img src="assets/fenetres/entreprise-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Entreprises &amp; B2B</span><span class="window-line">Afterworks, séminaires, portes ouvertes</span></button>
+          <button class="window" type="button" data-event="fete" aria-haspopup="dialog"><img src="assets/fenetres/fete-communale-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Fêtes communales &amp; marchés</span><span class="window-line">Une grande tablée de quartier</span></button>
+          <button class="window" type="button" data-event="prive" aria-haspopup="dialog"><img src="assets/fenetres/prive-mini.webp" alt="" loading="lazy" width="560" height="418"><span class="window-title">Événements privés</span><span class="window-line">Mariages, anniversaires, fêtes de famille</span></button>
+        </div>
+      </div>
+
+      <div class="layer layer-story" data-show="histoire">
+        <p class="eyebrow"><span class="num">06</span> Notre histoire</p>
+        <p class="story-text">Pasta Mo', c'est d'abord <strong>Morgane Scaramuzzi</strong>. Ses racines sont italiennes et, chez elle, la cuisine se transmet en famille : les sauces qu'elle prépare aujourd'hui viennent de ces recettes, qu'elle cuisine avec la même passion depuis toujours.</p>
+        <p class="story-text">Avec <strong>Malik Younes</strong>, elle a imaginé un stand simple : de bonnes pâtes fraîches d'un artisan genevois, ses trois sauces maison, et un service qui suit le rythme de vos événements.</p>
+        <p class="story-sign">Morgane &amp; Malik</p>
       </div>
     </div>
   </section>
 
-  <!-- 2. D'ici, puis la Pasta Box : la farine de l'artisan, puis les trois recettes, au fil du défilement -->
-  <section class="boxfilm" id="box" aria-label="La Pasta Box et ses trois recettes">
-    <div class="boxfilm-stage">
-      <canvas id="boxCanvas" role="img" aria-label="Pâtes fraîches de l'artisan sous une pluie de farine, puis la Pasta Box Pasta Mo' : Bolognese avec pluie de parmesan, Pesto Verde et Pomodoro versée"></canvas>
-      <div class="boxfilm-veil" aria-hidden="true"></div>
+  <!-- Détail d'un événement, ouvert depuis une fenêtre -->
+  <dialog class="event-dialog" id="eventDialog" aria-labelledby="eventTitle">
+    <button class="dialog-close" type="button" id="eventClose" aria-label="Fermer">×</button>
+    <img id="eventImg" src="" alt="" width="1200" height="896">
+    <div class="dialog-body">
+      <p class="eyebrow" id="eventKicker"></p>
+      <h2 class="title" id="eventTitle"></h2>
+      <p class="lead" id="eventText"></p>
+      <ul class="dialog-facts" id="eventFacts"></ul>
+      <a href="#contact" class="btn btn-gold" id="eventCta">Parler de mon événement</a>
     </div>
-    <div class="boxfilm-steps">
-      <article class="box-step box-step-intro" data-recipe="artisan" id="origine">
-        <div class="box-copy">
-          <p class="eyebrow"><span class="num">01</span> D'ici</p>
-          <h2 class="title">Des pâtes fraîches d'un artisan genevois. <em>Des sauces préparées en Suisse.</em></h2>
-          <p class="lead">Une carte courte, trois recettes de famille, une Pasta Box qui se tient d'une main : de quoi manger chaud, debout, au milieu de votre événement.</p>
-        </div>
-      </article>
-      <article class="box-step" data-recipe="bolognese" id="bolognese">
-        <div class="box-copy">
-          <p class="eyebrow"><span class="num">02</span> La généreuse</p>
-          <h2 class="title">Bolognese<em>.</em></h2>
-          <p class="lead">Un ragù de bœuf halal mijoté longuement en Suisse, sans alcool. Le dernier geste : une pluie de parmesan.</p>
-          <p class="box-tags"><span>Bœuf halal</span><span>Sans alcool</span></p>
-        </div>
-      </article>
-      <article class="box-step" data-recipe="pesto" id="pesto">
-        <div class="box-copy">
-          <p class="eyebrow"><span class="num">03</span> La fraîche</p>
-          <h2 class="title">Pesto <em>Verde.</em></h2>
-          <p class="lead">Basilic frais, pignons, parmesan et huile d'olive, préparé à froid en Suisse pour garder toute sa fraîcheur.</p>
-          <p class="box-tags"><span>Végétarien</span><span>Préparé à froid</span></p>
-        </div>
-      </article>
-      <article class="box-step" data-recipe="pomodoro" id="pomodoro">
-        <div class="box-copy">
-          <p class="eyebrow"><span class="num">04</span> L'essentielle</p>
-          <h2 class="title">Pomodoro<em>.</em></h2>
-          <p class="lead">Des tomates mijotées doucement en Suisse, de l'huile d'olive et du basilic. Une sauce douce et généreuse qui met tout le monde d'accord.</p>
-          <p class="box-tags"><span>Vegan</span><span>Sans piquant</span></p>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- 4. En situation : là où les gens se rassemblent -->
-  <section class="events" id="evenements">
-    <div class="events-pin">
-      <div class="events-head">
-        <p class="eyebrow"><span class="num">05</span> Événements</p>
-        <h2 class="title">On s'installe<br><em>là où vous êtes.</em></h2>
-        <p class="lead">Un stand compact, un menu court, un service rapide : Pasta Mo' s'adapte à la foule, au lieu et au rythme de votre événement.</p>
-      </div>
-      <div class="events-track" id="eventsTrack">
-        <article class="event-card">
-          <div class="event-media"><video data-video="event-169" data-mobile="event-vapeur" muted playsinline loop preload="none" poster="assets/poster/event-169.webp" aria-label="Soirée de festival au bord du lac"></video></div>
-          <h3>Festivals</h3><p>Grosses affluences, longues soirées : plusieurs postes de service, la file avance.</p>
-        </article>
-        <article class="event-card">
-          <div class="event-media"><video data-video="sport-coureur-169" data-mobile="sport-coureur-916" muted playsinline loop preload="none" poster="assets/poster/sport-coureur-169.webp" aria-label="Un coureur tient une box de pâtes à l'arrivée"></video></div>
-          <h3>Marathons & tournois</h3><p>Le repas d'après-course, réservé avec le dossard : l'organisateur connaît les quantités à l'avance.</p>
-        </article>
-        <article class="event-card">
-          <div class="event-media"><img src="assets/img/ctx-entreprise.webp" alt="Afterwork d'entreprise sur une terrasse à Genève" loading="lazy"></div>
-          <h3>Entreprises & B2B</h3><p>Afterworks, portes ouvertes, séminaires : un traiteur qui cuisine devant vos équipes.</p>
-        </article>
-        <article class="event-card">
-          <div class="event-media"><img src="assets/img/ctx-marche.webp" alt="Stand Pasta Mo' sur un marché genevois" loading="lazy"></div>
-          <h3>Fêtes communales & marchés</h3><p>Un rendez-vous de quartier, une grande tablée : un stand qui s'installe vite et sert chaud.</p>
-        </article>
-        <article class="event-card">
-          <div class="event-media"><img src="assets/img/ctx-prive.webp" alt="Fête privée dans un jardin, boxes de pâtes sur la table" loading="lazy"></div>
-          <h3>Événements privés</h3><p>Mariages, anniversaires, fêtes de quartier : de quoi nourrir tout le monde, sans chichis.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. Le stand -->
-  <section class="stand" id="stand">
-    <div class="stand-copy">
-      <p class="eyebrow"><span class="num">06</span> Le stand</p>
-      <h2 class="title">Ce qu'on apporte<br><em>chez vous.</em></h2>
-      <ul class="stand-facts">
-        <li><span>Service</span>Jusqu'à 150 portions par heure et par poste, plus en ajoutant des postes.</li>
-        <li><span>Cuisine</span>Cuiseurs à pâtes professionnels et trois bains-marie pour garder les sauces à température.</li>
-        <li><span>Produits</span>Pâtes fraîches artisanales fabriquées à Genève, sauces préparées en Suisse.</li>
-        <li><span>Pasta Box</span>Une Pasta Box Kraft éco-conçue, pratique pour le service et facile à emporter.</li>
-        <li><span>Installation</span>Emplacement, électricité et eau : on fait le point avec vous avant l'événement et on vous envoie notre fiche technique.</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- 6. Histoire -->
-  <section class="story" id="histoire">
-    <p class="eyebrow"><span class="num">07</span> Notre histoire</p>
-    <div class="story-body">
-      <p>Pasta Mo', c'est d'abord <strong>Morgane Scaramuzzi</strong>. Ses racines sont italiennes et, chez elle, la cuisine se transmet en famille : les sauces qu'elle prépare aujourd'hui viennent de ces recettes, qu'elle cuisine avec la même passion depuis toujours.</p>
-      <p>Avec <strong>Malik Younes</strong>, elle a imaginé un stand simple : de bonnes pâtes fraîches d'un artisan genevois, ses trois sauces maison, et un service qui suit le rythme de vos événements.</p>
-    </div>
-    <p class="story-sign">Morgane &amp; Malik</p>
-  </section>
+  </dialog>
 
   <!-- 7. Contact -->
   <section class="contact" id="contact">
@@ -193,8 +174,6 @@
   <p class="footer-small">Produits locaux · Savoir-faire italien · 2026</p>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script src="js/main.js" defer></script>
 </body>
