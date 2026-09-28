@@ -124,20 +124,32 @@
     : (b) => new Promise((ok, ko) => { const im = new Image(); im.onload = () => ok(im); im.onerror = ko; im.src = URL.createObjectURL(b); });
   const release = (bmp) => { if (bmp && bmp.close) bmp.close(); };
   const isReady = (v) => v && !(v instanceof Promise);
+  // téléchargements : 16 à la fois (le serveur répond mieux qu'à une rafale), une nouvelle tentative en cas d'échec
+  const queue = [];
+  let fetching = 0;
+  const pump = () => {
+    while (fetching < 16 && queue.length) { fetching++; queue.shift()().finally(() => { fetching--; pump(); }); }
+  };
   const load = (seg) => {
     if (!counts || !seg || files[seg]) return;
     const n = counts[seg];
     const entry = files[seg] = { blobs: [], left: n, ctrl: window.AbortController ? new AbortController() : null };
-    [...new Set([0, n - 1, ...Array.from({ length: n }, (_, i) => i)])].forEach((i) => {
+    const get = (i, retry) => {
       const arrived = (blob) => {
         if (files[seg] !== entry) return;
         if (blob) entry.blobs[i] = blob;
         if (--entry.left === 0) update(); else want();
       };
-      fetch(src(seg, i), entry.ctrl ? { signal: entry.ctrl.signal } : {})
-        .then((r) => (r.ok ? r.blob() : null))
-        .then(arrived, () => arrived(null));
-    });
+      if (files[seg] !== entry) return Promise.resolve();
+      return fetch(src(seg, i), entry.ctrl ? { signal: entry.ctrl.signal } : {})
+        .then((r) => (r.ok ? r.blob() : Promise.reject(r.status)))
+        .then(arrived, () => {
+          if (retry && files[seg] === entry) setTimeout(() => { queue.push(() => get(i, false)); pump(); }, 800);
+          else arrived(null);
+        });
+    };
+    [...new Set([0, n - 1, ...Array.from({ length: n }, (_, i) => i)])].forEach((i) => queue.push(() => get(i, true)));
+    pump();
   };
   const evict = (seg) => {
     const k = SEGS.indexOf(seg);
