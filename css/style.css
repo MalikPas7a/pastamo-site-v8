@@ -280,10 +280,11 @@ h1, h2, h3, p, figure, ul { margin: 0; }
 .stage-still, .stage-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
 .stage-video { opacity: 0; background: transparent; transition: opacity .25s ease; }
 .stage-video.is-front { opacity: 1; }
-/* vapeur à l'arrêt : apparaît en fondu lent sur l'image fixe (qui garde la vapeur de la fin du mouvement), pour s'y marier ;
-   s'efface vite quand le mouvement suivant commence */
+/* vapeur à l'arrêt : en fin de mouvement, elle prend le relais d'un coup, sur l'image exacte où le mouvement s'arrête
+   (is-instant) ; sinon (retour en arrière, chargement lent) elle apparaît en fondu lent. Elle s'efface vite au départ suivant */
 .stage-loop { transition-duration: .4s; }
 .stage-loop.is-on { opacity: 1; transition-duration: 1.4s; }
+.stage-loop.is-on.is-instant { transition-duration: 0s; }
 .is-cut .stage-media { opacity: 0; transition-duration: 1.2s, 1.2s, .22s; }
 .stage-shade { display: none; }
 /* une étape = un écran ; le navigateur s'y cale et ne saute jamais une étape d'un seul geste */
@@ -409,7 +410,7 @@ html { scroll-snap-type: y mandatory; }
   .layer-intro, .layer-story { justify-content: flex-start; padding-top: var(--band-b, 45svh); }
   .layer-intro .hero-title { font-size: 2.15rem; line-height: 1.02; }
   .layer-intro .hero-sub { font-size: .95rem; }
-  .layer-intro .hero-actions .btn-gold { display: none; }
+  .layer-intro .hero-actions { display: none; }
   .scroll-hint .on-desk { display: none; }
   .scroll-hint .on-touch { display: inline; }
   .layer-story { padding-bottom: calc(max(14px, env(safe-area-inset-bottom)) + 18px); }

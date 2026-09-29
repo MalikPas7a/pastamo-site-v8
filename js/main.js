@@ -75,7 +75,10 @@
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '6'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '7'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
+  // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête
+  const LOOP_FROM = 1;
   const src = (name) => `assets/film/${variant}/${name}?v=${FILM_V}`;
 
   const section = document.getElementById('immersion');
@@ -150,33 +153,69 @@
     loopV.preload = 'auto';
     loopV.load();
   };
-  // chaque départ ou arrêt de la vapeur a son numéro : une pause prévue par un ancien arrêt ne peut pas couper la nouvelle vapeur
-  // (c'est ce qui figeait l'image après un retour en arrière sur iPhone)
-  const loopStart = (i) => {
+  // la boucle est-elle (à peu près) sur l'image de raccord ? sinon on l'y replace
+  const seekLoop = (tol = 0.01) => { try { if (Math.abs(loopV.currentTime - LOOP_FROM) > tol) loopV.currentTime = LOOP_FROM; } catch (e) { /* pas encore chargée */ } };
+  // Pendant le mouvement, la boucle de l'étape d'arrivée est chargée et calée sous le mouvement (qui la cache) : l'iPhone ne
+  // charge une vidéo qu'une fois lancée, on la lance donc un instant puis on l'arrête aussitôt (quelques images après le raccord)
+  const loopPrime = (i) => {
+    loopPrepare(i);
     if (reduced || !STOPS[i].loop) return;
     const gen = ++loopGen;
+    seekLoop();
+    loopV.classList.add('is-instant', 'is-on');
+    const p = loopV.play();
+    const hold = () => { if (gen === loopGen) loopV.pause(); };
+    if (p && p.then) p.then(hold, () => { if (gen === loopGen) loopV.classList.remove('is-on', 'is-instant'); }); else hold();
+  };
+  // chaque départ ou arrêt de la vapeur a son numéro : une pause prévue par un ancien arrêt ne peut pas couper la nouvelle vapeur
+  // (c'est ce qui figeait l'image après un retour en arrière sur iPhone)
+  // how = 'relais' : en fin de mouvement, la boucle prend le relais d'un coup (même image) ; 'net' : image cachée (fondu de retour) ;
+  // sinon fondu lent sur l'image fixe. Renvoie la promesse de lecture pour les deux premiers cas.
+  const loopStart = (i, how) => {
+    if (reduced || !STOPS[i].loop) return null;
+    const gen = ++loopGen;
     loopPrepare(i);
-    try { loopV.currentTime = 0; } catch (e) { /* pas encore chargée */ }
-    // Safari (iPhone) peut refuser de lancer une vidéo invisible : on commence le fondu d'apparition avant de la lancer
-    // (tant qu'elle n'a pas démarré, elle reste transparente et l'image fixe reste visible dessous)
+    // pas encore d'image prête : le relais net n'est pas possible, on revient au fondu
+    if (how && loopV.readyState < 2) how = '';
+    // amorcée, la boucle attend quelques images après le raccord : on la reprend telle quelle (aucune recherche) ;
+    // si le navigateur l'a déplacée entre-temps, on la replace (le mouvement la cache jusqu'à sa première image)
+    seekLoop(how ? 0.15 : 0.01);
+    if (!how && loopV.classList.contains('is-instant')) { loopV.classList.remove('is-on', 'is-instant'); void loopV.offsetWidth; }
+    // Safari (iPhone) peut refuser de lancer une vidéo invisible : on l'affiche avant de la lancer
+    // (tant qu'elle n'a pas d'image, elle reste transparente et l'image fixe reste visible dessous)
+    if (how) loopV.classList.add('is-instant');
     loopV.classList.add('is-on');
     const p = loopV.play();
-    const fail = () => { if (gen === loopGen) loopV.classList.remove('is-on'); };
+    const fail = () => { if (gen === loopGen) loopV.classList.remove('is-on', 'is-instant'); };
     if (p && p.then) p.then(() => { if (gen !== loopGen || at !== i || playing || S !== i) fail(); }, fail);
+    return how && p && p.then ? p : null;
   };
   const loopStop = () => {
     const gen = ++loopGen;
-    loopV.classList.remove('is-on');
+    loopV.classList.remove('is-on', 'is-instant');
     setTimeout(() => { if (gen === loopGen) loopV.pause(); }, 450);
   };
+  // exécute cb quand la boucle a vraiment affiché une image à partir du raccord (au plus tard après 800 ms)
+  const afterLoopFrame = (cb) => {
+    let done = false;
+    const once = () => { if (!done) { done = true; cb(); } };
+    const check = (now, meta) => {
+      if (done) return;
+      if (!meta || (meta.mediaTime >= LOOP_FROM - 0.02 && meta.mediaTime < LOOP_FROM + 0.6)) once(); else loopV.requestVideoFrameCallback(check);
+    };
+    if (loopV.requestVideoFrameCallback) loopV.requestVideoFrameCallback(check);
+    setTimeout(once, loopV.requestVideoFrameCallback ? 800 : 80);
+  };
 
-  const arrive = (i) => {
+  const arrive = (i, how) => {
     at = i;
     showStill(i);
     updateLayers();
-    if (!playing && !queue.length && S === i) loopStart(i);
+    let p = null;
+    if (!playing && !queue.length && S === i) p = loopStart(i, how);
     // prépare le mouvement suivant dans le lecteur qui n'est pas affiché (jamais dans celui qui montre l'image)
     if (i + 1 < STOPS.length && !queue.length) prepare(vids.find((v) => !v.classList.contains('is-front') && v !== playing) || vids[1], i + 1);
+    return p;
   };
   const playNext = () => {
     if (playing || cutting || !queue.length) return;
@@ -193,15 +232,17 @@
     // Tant que sa première image n'est pas prête elle reste transparente, et l'image fixe de l'étape reste visible dessous.
     front(v);
     // la vapeur de l'étape quittée s'efface sous le mouvement ; celle de l'étape suivante se prépare pendant qu'il se joue
-    v.addEventListener('playing', () => { if (!mine()) return; loopStop(); setTimeout(() => { if (mine()) loopPrepare(i); }, 350); }, { once: true });
+    v.addEventListener('playing', () => { if (!mine()) return; loopStop(); setTimeout(() => { if (mine() && !queue.length) loopPrime(i); }, 450); }, { once: true });
     const done = () => {
       if (!mine()) return;
       v.removeEventListener('timeupdate', near);
       playing = null;
       if (queue.length) { arrive(i); playNext(); return; }
-      arrive(i);
-      // l'image fixe de l'étape est identique à la dernière image du mouvement : on peut retirer la vidéo sans que ça se voie
-      setTimeout(() => { if (!playing) front(null); }, 120);
+      // la boucle de vapeur reprend sur l'image exacte où le mouvement s'arrête ; on retire le mouvement dès qu'elle tourne
+      // (sans boucle, l'image fixe est identique à la dernière image du mouvement : on le retire sans que ça se voie)
+      const off = () => { if (!playing) front(null); };
+      const p = arrive(i, 'relais');
+      if (p) p.then(() => afterLoopFrame(off), off); else setTimeout(off, 120);
     };
     const near = () => { if (!mine()) { v.removeEventListener('timeupdate', near); return; } if (v.duration && v.currentTime > v.duration - 0.8 && !queue.length) updateLayers(i); };
     v.addEventListener('ended', done, { once: true });
@@ -221,7 +262,8 @@
     setTimeout(() => {
       front(null);
       cutting = false;
-      arrive(i);
+      // l'image est cachée par le fondu : la vapeur y est déjà en marche quand elle réapparaît
+      arrive(i, 'net');
       setTimeout(() => section.classList.remove('is-cut'), 60);
     }, 280);
   };
@@ -258,21 +300,29 @@
   };
 
   // Une étape = un écran ; le navigateur s'y cale (aimantation) et chaque changement d'écran déclenche l'étape
-  let programmatic = 0;
+  let programmatic = 0, lastScrollAt = 0;
   const stepFromScroll = () => {
     const h = steps[0].offsetHeight || innerHeight;
     return Math.max(0, Math.min(STOPS.length - 1, Math.round(-section.getBoundingClientRect().top / h)));
   };
+  // pendant un défilement lancé par le site, on ignore les écrans traversés ; tant que la page bouge encore, on attend
   const holdScroll = (ms) => {
     clearTimeout(programmatic);
-    programmatic = setTimeout(() => { programmatic = 0; const s = stepFromScroll(); if (s !== S) goTo(s, 'jump'); }, ms);
+    programmatic = setTimeout(() => {
+      if (Date.now() - lastScrollAt < 150) return holdScroll(200);
+      programmatic = 0; const s = stepFromScroll(); if (s !== S) goTo(s, 'jump');
+    }, ms);
   };
+  // L'image est fixe (collée à l'écran) : on saute directement à l'écran de l'étape, sans défilement animé.
+  // Sur iPhone, un défilement animé combattu par l'aimantation pouvait revenir en arrière et couper le mouvement.
   const scrollToStep = (i) => {
     const top = steps[i].getBoundingClientRect().top + window.scrollY;
-    if (i === S + 1 && !reduced) { goTo(i, 'play'); holdScroll(1000); window.scrollTo({ top, behavior: 'smooth' }); }
-    else { goTo(i, 'jump'); holdScroll(300); window.scrollTo(0, top); }
+    goTo(i, i === S + 1 && !reduced ? 'play' : 'jump');
+    holdScroll(400);
+    window.scrollTo(0, top);
   };
   addEventListener('scroll', () => {
+    lastScrollAt = Date.now();
     if (programmatic) return;
     const s = stepFromScroll();
     if (s !== S) goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play');
