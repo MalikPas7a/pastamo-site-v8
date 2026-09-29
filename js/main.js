@@ -75,7 +75,7 @@
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true, from: 2.1, lead: 2.3 },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '13'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '14'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
   // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête (Pomodoro : 2,5 s, la vapeur accompagne le basilic)
   const LOOP_FROM = 1;

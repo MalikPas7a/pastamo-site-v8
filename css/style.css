@@ -287,10 +287,10 @@ h1, h2, h3, p, figure, ul { margin: 0; }
 .stage-loop.is-on.is-instant { transition-duration: 0s; }
 /* départ : la vapeur de l'étape quittée reste au-dessus du mouvement, dans sa seule zone vivante, et s'y fond sans s'arrêter */
 .stage-loop.is-leaving { z-index: 2; opacity: 0; transition: opacity .9s cubic-bezier(.4, 0, .6, 1); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
-.stage-loop.is-leaving[data-step="2"] { -webkit-mask-image: url(../assets/film/mask-2.png?v=13); mask-image: url(../assets/film/mask-2.png?v=13); }
-.stage-loop.is-leaving[data-step="3"] { -webkit-mask-image: url(../assets/film/mask-3.png?v=13); mask-image: url(../assets/film/mask-3.png?v=13); }
-.stage-loop.is-leaving[data-step="4"] { -webkit-mask-image: url(../assets/film/mask-4.png?v=13); mask-image: url(../assets/film/mask-4.png?v=13);  transition-duration: .35s;}
-.stage-loop.is-leaving[data-step="5"] { -webkit-mask-image: url(../assets/film/mask-5.png?v=13); mask-image: url(../assets/film/mask-5.png?v=13); }
+.stage-loop.is-leaving[data-step="2"] { -webkit-mask-image: url(../assets/film/mask-2.png?v=14); mask-image: url(../assets/film/mask-2.png?v=14); }
+.stage-loop.is-leaving[data-step="3"] { -webkit-mask-image: url(../assets/film/mask-3.png?v=14); mask-image: url(../assets/film/mask-3.png?v=14); }
+.stage-loop.is-leaving[data-step="4"] { -webkit-mask-image: url(../assets/film/mask-4.png?v=14); mask-image: url(../assets/film/mask-4.png?v=14);  transition-duration: .35s;}
+.stage-loop.is-leaving[data-step="5"] { -webkit-mask-image: url(../assets/film/mask-5.png?v=14); mask-image: url(../assets/film/mask-5.png?v=14); }
 /* le mouvement s'efface d'un coup quand la vapeur, synchronisée dessous, affiche déjà la même image */
 .stage-video.is-instant { transition: none; }
 /* fondu direct vers une étape (mouvement pas encore téléchargé) : l'image actuelle s'efface lentement sur la nouvelle */
