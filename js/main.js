@@ -75,7 +75,7 @@
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '10'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '11'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
   // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête (Pomodoro : 2,5 s, la vapeur accompagne le basilic)
   const LOOP_FROM = 1;
@@ -99,8 +99,12 @@
   [...vids, ...loopEls].forEach((v) => { v.muted = true; v.playsInline = true; });
   // vapeur en attente sous un mouvement : si le navigateur la laisse avancer, on la ramène au début
   loopEls.forEach((el) => el.addEventListener('timeupdate', () => { if (el.dataset.priming && !el.paused && el.currentTime > 0.35) { el.pause(); try { el.currentTime = 0; } catch (e) { /* */ } } }));
-  // les images fixes des étapes sont petites : on les charge toutes pour des retours et des fondus instantanés
-  const stills = STOPS.map((_, i) => { const im = new Image(); im.src = src(`stop-${i}.webp`); return im; });
+  // les images fixes des étapes sont petites : on les charge toutes pour des retours et des fondus instantanés ; à l'ouverture,
+  // seulement l'enseigne et les pâtes fraîches, pour laisser la priorité au premier mouvement (les autres suivent)
+  const stillUrl = (i) => src(`stop-${i}.webp`);
+  const stills = STOPS.map((_, i) => { const im = new Image(); if (i < 2) im.src = stillUrl(i); return im; });
+  const loadStills = () => stills.forEach((im, i) => { if (!im.getAttribute('src')) im.src = stillUrl(i); });
+  setTimeout(loadStills, 4000);
 
   /* Cadre de l'image : il garde la taille naturelle du film (jamais agrandi ni recadré) et se place selon l'étape.
      Ordinateur : grand et centré pour l'enseigne, à gauche pour les box (texte à droite), plus petit pour le stand,
@@ -143,13 +147,14 @@
     if (x === v) { x.classList.remove('is-instant'); x.classList.add('is-front'); }
     else if (x.classList.contains('is-front')) { x.classList.toggle('is-instant', !!instant); x.classList.remove('is-front'); }
   });
-  const showStill = (i) => { still.src = stills[i].src; };
+  const showStill = (i) => { still.src = stillUrl(i); };
   /* Téléchargement à l'avance, un fichier à la fois, dans l'ordre où on en aura besoin : sur téléphone tout le parcours
      (≈ 4 Mo), sur ordinateur les deux étapes suivantes. Lus depuis la mémoire, mouvements et vapeurs ne s'arrêtent jamais
      pour attendre le réseau (l'iPhone ne précharge pas les vidéos). Tant qu'un fichier n'est pas arrivé, on le lit en direct. */
   const inMemory = {};
   // Firefox fige une vidéo en mémoire dès qu'on la repositionne (même au début) : il garde la lecture en direct
   const canPrefetch = !reduced && !/firefox/i.test(navigator.userAgent);
+  if (!canPrefetch) loadStills();
   let fetchQueue = [], fetching = false;
   const pump = () => {
     if (fetching || !fetchQueue.length) return;
@@ -160,12 +165,31 @@
     fetch(src(name)).then((r) => (r.ok ? r.blob() : null)).then((b) => {
       if (!b) return;
       const url = inMemory[name] = URL.createObjectURL(b);
+      if (name === 'move-1.mp4') loadStills();
       // déjà préparé en direct mais pas encore lancé : on passe à la copie en mémoire
       const [, kind, k] = name.match(/^(move|loop)-(\d)/);
       if (kind === 'move') vids.forEach((v) => { if (v.dataset.move === k && v !== playing && !v.classList.contains('is-front') && v.paused) { v.src = url; v.load(); } });
       else loopEls.forEach((el) => { if (el.dataset.step === k && el.paused && !el.classList.contains('is-on') && !el.classList.contains('is-leaving')) { el.src = url; el.load(); } });
-    }).catch(() => {}).then(() => { fetching = false; pump(); });
+    }).catch(() => {}).then(() => {
+      fetching = false;
+      const ok = !!inMemory[name];
+      if (!ok) delete inMemory[name];   // échec : on lira en direct
+      (waiters[name] || []).forEach((f) => f(ok)); delete waiters[name];
+      pump();
+    });
   };
+  // un mouvement est demandé avant d'être en mémoire : on le télécharge en premier, et on peut l'attendre
+  const waiters = {};
+  const prefetchNow = (name) => {
+    if (!canPrefetch || name in inMemory) return;
+    fetchQueue = [name].concat(fetchQueue.filter((n) => n !== name));
+    pump();
+  };
+  const whenInMemory = (name, ms) => new Promise((res) => {
+    if (inMemory[name]) return res(true);
+    (waiters[name] = waiters[name] || []).push(res);
+    setTimeout(() => res(false), ms);
+  });
   const mediaSrc = (name) => inMemory[name] || src(name);
   const prefetchAround = (i) => {
     if (!canPrefetch) return;
@@ -277,9 +301,34 @@
     if (i + 1 < STOPS.length && !queue.length) prepare(vids.find((v) => !v.classList.contains('is-front') && v !== playing) || vids[1], i + 1);
     return p;
   };
+  // Rejoindre une étape en fondu, en recalant la page dessus (mouvement impossible ou bloqué par le réseau)
+  const forceStep = (i) => {
+    queue.length = 0;
+    waitingFor = null;
+    holdScroll(500);
+    window.scrollTo(0, steps[i].getBoundingClientRect().top + window.scrollY);
+    S = -1;
+    goTo(i, 'jump');
+  };
+  let waitingFor = null;
   const playNext = () => {
-    if (playing || cutting || !queue.length) return;
-    const i = queue.shift();
+    if (playing || cutting || !queue.length || waitingFor !== null) return;
+    const i = queue[0], name = `move-${i}.mp4`;
+    const ready = vids.find((x) => x.dataset.move === String(i));
+    // Tout début de visite : le mouvement n'est pas encore téléchargé. Lu en direct, l'iPhone peut se figer au milieu ; on
+    // l'attend donc sur l'image actuelle (en 5G, une fraction de seconde), puis il part d'un trait. Trop long : fondu vers l'étape.
+    if (canPrefetch && !inMemory[name] && !(ready && ready.readyState >= 4)) {
+      waitingFor = i;
+      prefetchNow(name);
+      whenInMemory(name, 2500).then((ok) => {
+        if (waitingFor !== i) return;
+        waitingFor = null;
+        if (queue[0] !== i || cutting || playing) return;
+        if (ok) playNext(); else forceStep(i);
+      });
+      return;
+    }
+    queue.shift();
     const v = vids.find((x) => x.dataset.move === String(i)) || vids.find((x) => !x.classList.contains('is-front')) || vids[0];
     prepare(v, i);
     playing = v;
@@ -341,6 +390,14 @@
       if (p) p.then(() => afterLoopFrame(off), off); else setTimeout(off, 120);
     };
     const near = () => { if (!mine()) { v.removeEventListener('timeupdate', near); return; } if (v.duration && v.currentTime > v.duration - 0.8 && !queue.length) updateLayers(i); };
+    // le réseau bloque le mouvement plus d'1,2 s : on rejoint l'étape en fondu plutôt que de rester figé
+    let stallT = 0;
+    const unwatch = () => { clearTimeout(stallT); v.removeEventListener('waiting', onWait); v.removeEventListener('playing', onGo); };
+    const onGo = () => clearTimeout(stallT);
+    const onWait = () => { clearTimeout(stallT); stallT = setTimeout(() => { if (mine() && v.readyState < 3) { unwatch(); forceStep(i); } }, 1200); };
+    v.addEventListener('waiting', onWait);
+    v.addEventListener('playing', onGo);
+    v.addEventListener('ended', unwatch, { once: true });
     v.addEventListener('ended', done, { once: true });
     v.addEventListener('timeupdate', near);
     const p = v.play();
@@ -377,6 +434,11 @@
 
   const goTo = (s, how) => {
     if (s === S && how !== 'init') return;
+    if (waitingFor !== null && how !== 'init') {
+      if (s > waitingFor) { holdScroll(400); window.scrollTo(0, steps[waitingFor].getBoundingClientRect().top + window.scrollY); return; }
+      waitingFor = null;
+      queue.length = 0;
+    }
     const last = queue.length ? queue[queue.length - 1] : (playing ? +playing.dataset.move : at);
     S = s;
     const st = STOPS[s];
