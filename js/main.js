@@ -65,20 +65,21 @@
      la plus sûre sur iPhone) : elle part exactement de l'image fixe de l'étape précédente et finit sur celle de la suivante.
      Un geste (défilement, glissement, flèche, « Suivant », clic sur une étape) passe à l'étape suivante ;
      revenir en arrière ou sauter plus loin se fait par un fondu. À l'arrivée, seule une légère vapeur continue de monter
-     (l'image de l'étape reste fixe au pixel près, la caméra ne bouge pas) ; aux pâtes fraîches, la fine farine continue de tomber. */
+     (l'image de l'étape reste fixe au pixel près, la caméra ne bouge pas) ; aux pâtes fraîches, la farine a fini de tomber : image calme. */
   const STOPS = [
     { id: 'intro', show: ['intro'], layout: 'center' },
-    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine', loop: true },
+    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine' },
     { id: 'bolognese', show: ['bolognese'], layout: 'left', loop: true },
     { id: 'pesto', show: ['pesto'], layout: 'left', loop: true },
-    { id: 'pomodoro', show: ['pomodoro'], layout: 'left', loop: true },
+    { id: 'pomodoro', show: ['pomodoro'], layout: 'left', loop: true, from: 2.5 },
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '9'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '10'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
-  // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête
+  // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête (Pomodoro : 2,5 s, la vapeur accompagne le basilic)
   const LOOP_FROM = 1;
+  const loopFrom = (i) => (STOPS[i] && STOPS[i].from) || LOOP_FROM;
   if (location.search.includes('filmdebug')) window.__syncLog = [];
   const src = (name) => `assets/film/${variant}/${name}?v=${FILM_V}`;
 
@@ -235,7 +236,7 @@
     if (how === 'suite' && !loopV.paused) { loopV.playbackRate = 1; loopV.classList.add('is-instant', 'is-on'); return null; }
     if (how === 'suite') how = 'relais';
     if (how && loopV.readyState < 2) how = '';
-    seekLoop(LOOP_FROM, how ? 0.15 : 0.01);
+    seekLoop(loopFrom(i), how ? 0.15 : 0.01);
     if (!how && loopV.classList.contains('is-instant')) { loopV.classList.remove('is-on', 'is-instant'); void loopV.offsetWidth; }
     // Safari (iPhone) peut refuser de lancer une vidéo invisible : on l'affiche avant de la lancer
     // (tant qu'elle n'a pas d'image, elle reste transparente et l'image fixe reste visible dessous)
@@ -256,10 +257,10 @@
   // exécute cb quand la vapeur a vraiment affiché une image à partir du raccord (au plus tard après 800 ms)
   const afterLoopFrame = (cb) => {
     let done = false;
-    const el = loopV, once = () => { if (!done) { done = true; cb(); } };
+    const el = loopV, from = loopFrom(+el.dataset.step), once = () => { if (!done) { done = true; cb(); } };
     const check = (now, meta) => {
       if (done) return;
-      if (!meta || (meta.mediaTime >= LOOP_FROM - 0.02 && meta.mediaTime < LOOP_FROM + 0.6)) once(); else el.requestVideoFrameCallback(check);
+      if (!meta || (meta.mediaTime >= from - 0.02 && meta.mediaTime < from + 0.6)) once(); else el.requestVideoFrameCallback(check);
     };
     if (el.requestVideoFrameCallback) el.requestVideoFrameCallback(check);
     setTimeout(once, el.requestVideoFrameCallback ? 800 : 80);
@@ -303,7 +304,7 @@
       if (queue.length || S !== i || !STOPS[i].loop || reduced) { L.playbackRate = 1; return; }
       if (debug && !(D && !v.paused && L.dataset.step === String(i) && L.readyState >= 2) && D && D - v.currentTime < 1.1) debug.push(`${i} attente: pause=${v.paused} étape=${L.dataset.step} rs=${L.readyState}`);
       if (D && !v.paused && L.dataset.step === String(i) && L.readyState >= 2) {
-        const want = v.currentTime - (D - LOOP_FROM);
+        const want = v.currentTime - (D - loopFrom(i));
         if (debug && want > -0.2) debug.push(`${i} reste=${(D - v.currentTime).toFixed(3)} vapeur=${L.paused ? 'pause' : 'lecture'}@${L.currentTime.toFixed(3)} voulu=${want.toFixed(3)} vitesse=${L.playbackRate.toFixed(2)} rs=${L.readyState}`);
         if (want >= 0) {
           delete L.dataset.priming;
@@ -416,17 +417,32 @@
     holdScroll(400);
     window.scrollTo(0, top);
   };
+  // Un geste = une étape : dès que le défilement passe à l'écran suivant, le mouvement part ; ensuite on ignore l'élan (sur
+  // iPhone il peut dépasser puis revenir, ce qui faisait sauter les pâtes fraîches) jusqu'à ce que la page soit posée
+  let gesture = false, settleTimer = 0;
   addEventListener('scroll', () => {
     lastScrollAt = Date.now();
     if (programmatic) return;
+    clearTimeout(settleTimer);
+    settleTimer = setTimeout(() => {
+      gesture = false;
+      if (programmatic) return;
+      const s = stepFromScroll();
+      if (s !== S) goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play');
+    }, 160);
+    if (gesture) return;
     const s = stepFromScroll();
-    if (s !== S) goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play');
+    if (s !== S) { gesture = true; goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play'); }
   }, { passive: true });
   nextBtn.addEventListener('click', () => {
     if (S < STOPS.length - 1) scrollToStep(S + 1);
     else { holdScroll(1200); scrollToY(contact.getBoundingClientRect().top + window.scrollY); }
   });
 
+  // À l'ouverture, on commence toujours par l'enseigne et la première phrase (le navigateur ne remet pas l'ancienne position),
+  // sauf lien direct vers une partie de la page
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) window.scrollTo(0, 0);
   goTo(stepFromScroll(), 'init');
   // Intro (en haut de page) : l'enseigne s'allume seule au chargement, puis l'image fixe de l'enseigne allumée prend le relais
   if (!reduced && S === 0) {
