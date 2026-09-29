@@ -72,10 +72,10 @@
     { id: 'bolognese', show: ['bolognese'], layout: 'left', loop: true },
     { id: 'pesto', show: ['pesto'], layout: 'left', loop: true },
     { id: 'pomodoro', show: ['pomodoro'], layout: 'left', loop: true, from: 2.5 },
-    { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true },
+    { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true, from: 2.1, lead: 2.3 },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '11'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '13'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
   // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête (Pomodoro : 2,5 s, la vapeur accompagne le basilic)
   const LOOP_FROM = 1;
@@ -155,14 +155,30 @@
   // Firefox fige une vidéo en mémoire dès qu'on la repositionne (même au début) : il garde la lecture en direct
   const canPrefetch = !reduced && !/firefox/i.test(navigator.userAgent);
   if (!canPrefetch) loadStills();
-  let fetchQueue = [], fetching = false;
+  let fetchQueue = [], fetching = false, current = null;
+  // arrête le téléchargement en cours s'il s'agit de ce fichier (devenu inutile : on passe au suivant)
+  const cancelFetch = (name) => { if (current && current.name === name && current.ctrl) current.ctrl.abort(); };
   const pump = () => {
     if (fetching || !fetchQueue.length) return;
     const name = fetchQueue.shift();
     if (name in inMemory) return pump();
     fetching = true;
     inMemory[name] = null;
-    fetch(src(name)).then((r) => (r.ok ? r.blob() : null)).then((b) => {
+    const ctrl = typeof AbortController === 'function' ? new AbortController() : null;
+    current = { name, ctrl };
+    fetch(src(name), ctrl ? { signal: ctrl.signal } : undefined).then((r) => {
+      if (!r.ok) return null;
+      const total = +r.headers.get('content-length') || 0;
+      if (!total || !r.body || !r.body.getReader) return r.blob();
+      // on suit l'arrivée des octets : on sait ainsi si un fichier demandé est presque là (voir eta)
+      const reader = r.body.getReader(), parts = [], pr = progress[name] = { got: 0, total, t0: performance.now() };
+      const read = () => reader.read().then(({ done, value }) => {
+        if (done) return new Blob(parts, { type: r.headers.get('content-type') || 'video/mp4' });
+        parts.push(value); pr.got += value.length;
+        return read();
+      });
+      return read();
+    }).then((b) => {
       if (!b) return;
       const url = inMemory[name] = URL.createObjectURL(b);
       if (name === 'move-1.mp4') loadStills();
@@ -172,6 +188,7 @@
       else loopEls.forEach((el) => { if (el.dataset.step === k && el.paused && !el.classList.contains('is-on') && !el.classList.contains('is-leaving')) { el.src = url; el.load(); } });
     }).catch(() => {}).then(() => {
       fetching = false;
+      current = null;
       const ok = !!inMemory[name];
       if (!ok) delete inMemory[name];   // échec : on lira en direct
       (waiters[name] || []).forEach((f) => f(ok)); delete waiters[name];
@@ -179,7 +196,14 @@
     });
   };
   // un mouvement est demandé avant d'être en mémoire : on le télécharge en premier, et on peut l'attendre
-  const waiters = {};
+  const waiters = {}, progress = {};
+  // temps restant estimé (s) avant qu'un fichier en cours soit entièrement arrivé ; infini s'il n'a pas encore commencé
+  const eta = (name) => {
+    const pr = progress[name];
+    if (!pr || !pr.got) return Infinity;
+    const s = (performance.now() - pr.t0) / 1000;
+    return s > 0 ? (pr.total - pr.got) / (pr.got / s) : Infinity;
+  };
   const prefetchNow = (name) => {
     if (!canPrefetch || name in inMemory) return;
     fetchQueue = [name].concat(fetchQueue.filter((n) => n !== name));
@@ -310,22 +334,42 @@
     S = -1;
     goTo(i, 'jump');
   };
+  // Fondu direct vers l'étape i, sans mouvement ni attente : l'image actuelle (l'enseigne en train de s'allumer, ou sa dernière
+  // image) passe devant et s'efface en 0,9 s sur l'image de l'étape, posée dessous
+  const dissolveTo = (i) => {
+    queue.length = 0;
+    waitingFor = null;
+    const cur = vids.find((x) => x.classList.contains('is-front')) || vids.find((x) => x.dataset.move === 'intro' && x.readyState >= 2);
+    cancelFetch(`move-${i}.mp4`);
+    if (!cur || cutting) return forceStep(i);
+    cur.classList.add('is-instant', 'is-front');
+    void cur.offsetWidth;
+    arrive(i);
+    cur.classList.remove('is-instant', 'is-front');
+    cur.classList.add('is-slow');
+    dissolving = Date.now();
+    setTimeout(() => cur.classList.remove('is-slow'), 1000);
+  };
+  let dissolving = 0;
   let waitingFor = null;
   const playNext = () => {
     if (playing || cutting || !queue.length || waitingFor !== null) return;
     const i = queue[0], name = `move-${i}.mp4`;
     const ready = vids.find((x) => x.dataset.move === String(i));
-    // Tout début de visite : le mouvement n'est pas encore téléchargé. Lu en direct, l'iPhone peut se figer au milieu ; on
-    // l'attend donc sur l'image actuelle (en 5G, une fraction de seconde), puis il part d'un trait. Trop long : fondu vers l'étape.
+    // Tout début de visite : le mouvement n'est pas encore téléchargé. Lu en direct, l'iPhone peut se figer au milieu, et une
+    // attente se voit comme un blocage. Donc : presque arrivé (moins de 0,4 s) → on l'attend un instant et il part d'un trait ;
+    // sinon, aucune attente : l'image se fond aussitôt dans celle de l'étape.
     if (canPrefetch && !inMemory[name] && !(ready && ready.readyState >= 4)) {
-      waitingFor = i;
       prefetchNow(name);
-      whenInMemory(name, 2500).then((ok) => {
-        if (waitingFor !== i) return;
-        waitingFor = null;
-        if (queue[0] !== i || cutting || playing) return;
-        if (ok) playNext(); else forceStep(i);
-      });
+      if (eta(name) < 0.4) {
+        waitingFor = i;
+        whenInMemory(name, 900).then((ok) => {
+          if (waitingFor !== i) return;
+          waitingFor = null;
+          if (queue[0] !== i || cutting || playing) return;
+          if (ok) playNext(); else dissolveTo(i);
+        });
+      } else dissolveTo(i);
       return;
     }
     queue.shift();
@@ -389,7 +433,7 @@
       const p = arrive(i, 'relais');
       if (p) p.then(() => afterLoopFrame(off), off); else setTimeout(off, 120);
     };
-    const near = () => { if (!mine()) { v.removeEventListener('timeupdate', near); return; } if (v.duration && v.currentTime > v.duration - 0.8 && !queue.length) updateLayers(i); };
+    const near = () => { if (!mine()) { v.removeEventListener('timeupdate', near); return; } if (v.duration && v.currentTime > v.duration - (STOPS[i].lead || 0.8) && !queue.length) updateLayers(i); };
     // le réseau bloque le mouvement plus d'1,2 s : on rejoint l'étape en fondu plutôt que de rester figé
     let stallT = 0;
     const unwatch = () => { clearTimeout(stallT); v.removeEventListener('waiting', onWait); v.removeEventListener('playing', onGo); };
@@ -434,6 +478,8 @@
 
   const goTo = (s, how) => {
     if (s === S && how !== 'init') return;
+    // pendant un fondu direct (moins d'une seconde), un nouveau geste en avant ne fait pas sauter l'étape qui apparaît
+    if (how !== 'init' && s > S && Date.now() - dissolving < 1000) { holdScroll(400); window.scrollTo(0, steps[S].getBoundingClientRect().top + window.scrollY); return; }
     if (waitingFor !== null && how !== 'init') {
       if (s > waitingFor) { holdScroll(400); window.scrollTo(0, steps[waitingFor].getBoundingClientRect().top + window.scrollY); return; }
       waitingFor = null;
@@ -482,8 +528,19 @@
   // Un geste = une étape : dès que le défilement passe à l'écran suivant, le mouvement part ; ensuite on ignore l'élan (sur
   // iPhone il peut dépasser puis revenir, ce qui faisait sauter les pâtes fraîches) jusqu'à ce que la page soit posée
   let gesture = false, settleTimer = 0;
+  // Ouverture ou rechargement : tant que le visiteur n'a pas touché l'écran (ni clavier, souris, molette), tout défilement vient
+  // du navigateur (l'iPhone tente de remettre l'ancienne position, et l'aimantation posait alors la page sur les pâtes fraîches) :
+  // on le remet en haut. Protection limitée aux 2 premières secondes.
+  let userMoved = !!location.hash;
+  const moved = () => { userMoved = true; };
+  ['touchstart', 'pointerdown', 'mousedown', 'wheel', 'keydown'].forEach((ev) => addEventListener(ev, moved, { once: true, passive: true }));
+  setTimeout(moved, 2000);
+  const backToTop = () => { if (!userMoved && window.scrollY > 0) { holdScroll(300); window.scrollTo(0, 0); } };
+  addEventListener('load', backToTop);
+  addEventListener('pageshow', backToTop);
   addEventListener('scroll', () => {
     lastScrollAt = Date.now();
+    if (!userMoved) { backToTop(); return; }
     if (programmatic) return;
     clearTimeout(settleTimer);
     settleTimer = setTimeout(() => {
