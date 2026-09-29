@@ -717,7 +717,7 @@
       d.message ? d.message + '\n' : '', d.nom, d.email,
     ].join('\n');
     text.textContent = body;
-    mail.href = `mailto:malik@pastamo.ch?subject=${encodeURIComponent(`Événement · ${d.type} · ${date}`)}&body=${encodeURIComponent(body)}`;
+    mail.href = `mailto:ciao@pastamo.ch?subject=${encodeURIComponent(`Événement · ${d.type} · ${date}`)}&body=${encodeURIComponent(body)}`;
     out.hidden = false;
   });
   document.getElementById('formCopy').addEventListener('click', async (e) => {
