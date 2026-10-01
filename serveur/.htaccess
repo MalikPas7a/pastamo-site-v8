@@ -4,8 +4,8 @@
 <IfModule mod_headers.c>
   # Forcer HTTPS pendant un an (à n'activer qu'une fois le site servi en HTTPS sur son domaine définitif)
   Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-  # Politique de sécurité : uniquement nos fichiers, plus les polices Google ; interdiction d'être affiché dans un cadre
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests"
+  # Politique de sécurité : uniquement nos fichiers, y compris les polices locales ; interdiction d'être affiché dans un cadre
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; frame-ancestors 'none'; upgrade-insecure-requests"
   Header always set X-Frame-Options "DENY"
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"

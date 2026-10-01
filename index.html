@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Pasta Mo' · Street food italienne pour vos événements · Genève</title>
@@ -19,17 +19,16 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","name":"Pasta Mo'","description":"Street food italienne pour vos événements : pâtes fraîches d'un artisan genevois et trois sauces faites maison.","url":"https://pastamo.ch/","image":"https://pastamo.ch/assets/og-pastamo.jpg","email":"ciao@pastamo.ch","telephone":"+41782133868","servesCuisine":"Italienne","areaServed":{"@type":"City","name":"Genève"},"address":{"@type":"PostalAddress","addressLocality":"Genève","addressCountry":"CH"}}</script>
-<link rel="icon" href="assets/logo.svg?v=6" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Jost:wght@300;400;500&display=swap">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FoodEstablishment","name":"Pasta Mo'","description":"Street food italienne pour vos événements : pâtes fraîches d'un artisan genevois et trois sauces faites maison.","url":"https://pastamo.ch/","image":"https://pastamo.ch/assets/og-pastamo.jpg","email":"ciao@pastamo.ch","telephone":"+41782133868","servesCuisine":"Italienne","areaServed":{"@type":"City","name":"Genève"},"address":{"@type":"PostalAddress","streetAddress":"Chemin des Sports 16","postalCode":"1203","addressLocality":"Genève","addressCountry":"CH"}}</script>
+<link rel="icon" href="assets/logo.svg?v=7" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css?v=1">
 <link rel="stylesheet" href="css/style.min.css?v=14">
+<link rel="stylesheet" href="css/brand.css?v=1">
 </head>
 <body>
 
 <header class="nav" id="nav">
-  <a href="#top" class="nav-logo" aria-label="Pasta Mo', retour en haut"><img src="assets/logo.svg?v=6" alt="Pasta Mo'" width="144" height="38"></a>
+  <a href="#top" class="nav-logo" aria-label="Pasta Mo', retour en haut"><img src="assets/logo.svg?v=7" alt="Pasta Mo'" width="144" height="38"></a>
   <nav class="nav-links" aria-label="Parcours">
     <a href="#artisan">D'ici</a>
     <a href="#bolognese">Les recettes</a>
@@ -90,7 +89,7 @@
 
       <div class="layer layer-intro" data-show="intro">
         <p class="eyebrow">Street food italienne · Genève</p>
-        <h1 class="hero-title">Fait maison. <em>Là pour rassembler.</em></h1>
+        <h1 class="hero-title">Fait avec coeur, <em>Là pour rassembler</em></h1>
         <p class="hero-sub">Des pâtes fraîches d'un artisan genevois, des sauces faites maison et mijotées longtemps. Servies chaudes et vite sur vos festivals, événements sportifs, fêtes communales et événements d'entreprise.</p>
         <div class="hero-actions">
           <a href="#contact" class="btn btn-gold">Faire venir Pasta Mo</a>
@@ -191,6 +190,7 @@
       <label class="full">Votre message<textarea name="message" rows="3" maxlength="1500"></textarea></label>
       <!-- champ piège anti-spam : invisible pour les visiteurs, rempli seulement par les robots -->
       <label class="hp" aria-hidden="true">Site web<input name="site" tabindex="-1" autocomplete="off"></label>
+      <p class="form-notice full">Ce formulaire prépare un e-mail dans votre navigateur. Vous devez l’envoyer depuis votre messagerie pour que nous recevions votre demande. Consultez notre page <a href="confidentialite.html">Confidentialité &amp; cookies</a>.</p>
       <button class="btn btn-gold full" type="submit">Préparer ma demande</button>
       <div class="form-out full" id="formOut" hidden>
         <p>Votre demande est prête à envoyer à ciao@pastamo.ch</p>
@@ -205,9 +205,14 @@
 </main>
 
 <footer class="footer">
-  <img src="assets/logo.svg?v=6" alt="Pasta Mo'" width="181" height="48">
+  <img src="assets/logo.svg?v=7" alt="Pasta Mo'" width="181" height="48">
   <p>Street food italienne · Genève</p>
   <p class="footer-small">Produits locaux · Savoir-faire italien · 2026</p>
+  <p class="footer-identity">Pasta Mo · Entreprise individuelle de Younes Malik<br>Chemin des Sports 16 · 1203 Genève · Suisse</p>
+  <nav class="footer-legal" aria-label="Informations légales">
+    <a href="mentions-legales.html">Mentions légales</a>
+    <a href="confidentialite.html">Confidentialité &amp; cookies</a>
+  </nav>
 </footer>
 
 <script src="js/main.min.js?v=15" defer></script>
