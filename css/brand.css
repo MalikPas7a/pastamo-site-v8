@@ -1,0 +1,72 @@
+/* Pasta Mo — palette validée : film sombre, terracotta, réservation crème. */
+:root {
+  color-scheme: dark;
+  --terracotta: #C45B3F;
+  --brand-cream: #FFF1D6;
+  --deep-brown: #0B0908;
+  --gold: var(--terracotta);
+  --gold-hi: var(--brand-cream);
+  --ink: var(--brand-cream);
+  --cream: var(--brand-cream);
+}
+
+.btn-gold, .fab {
+  background: var(--terracotta);
+  color: var(--deep-brown);
+  box-shadow: none;
+}
+.btn-gold:hover, .btn-gold:focus-visible, .fab:hover, .fab:focus-visible {
+  background: var(--brand-cream);
+  color: var(--deep-brown);
+  box-shadow: none;
+}
+.nav-links a::after { box-shadow: none; }
+.neon-title em { text-shadow: none; }
+
+.contact {
+  color-scheme: light;
+  background: var(--brand-cream);
+  color: var(--deep-brown);
+  --bg-2: var(--brand-cream);
+  --ink: var(--deep-brown);
+  --muted: #493729;
+  --cream: var(--deep-brown);
+  --gold-hi: var(--terracotta);
+  --faint: rgba(11, 9, 8, .16);
+}
+.contact .title em, .contact .eyebrow, .contact-lines a {
+  color: var(--deep-brown);
+  text-shadow: none;
+}
+.contact .btn-gold {
+  background: var(--terracotta);
+  color: var(--deep-brown);
+  box-shadow: none;
+}
+.contact .btn-gold:hover, .contact .btn-gold:focus-visible {
+  background: var(--deep-brown);
+  color: var(--brand-cream);
+}
+.contact .btn-line { box-shadow: inset 0 0 0 1px rgba(11, 9, 8, .4); }
+.form input, .form select, .form textarea { border-bottom-color: rgba(11, 9, 8, .4); }
+.form-notice { font-size: .88rem; line-height: 1.65; color: var(--muted); }
+.form-notice a { text-underline-offset: .2em; }
+
+.footer { background: var(--terracotta); }
+.footer p { color: var(--deep-brown); }
+.footer .footer-identity {
+  max-width: 42em;
+  font-size: .86rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.footer-legal {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  color: var(--deep-brown);
+  font-size: .86rem;
+}
+.footer-legal a { text-underline-offset: .25em; }
+.footer :focus-visible { outline: 2px solid var(--deep-brown); outline-offset: 5px; }

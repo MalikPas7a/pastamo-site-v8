@@ -2,9 +2,10 @@
 
 Le site est aujourd'hui publié sur GitHub Pages, qui ne permet pas d'ajouter des en-têtes HTTP.
 La page contient donc déjà sa politique de sécurité (balise `Content-Security-Policy` dans `index.html`) :
-seuls nos propres fichiers et les polices Google peuvent être chargés.
+seuls les fichiers du site, y compris les polices hébergées localement, peuvent être chargés.
+Les pages légales ont aussi leur propre politique CSP et ne chargent aucun script.
 
-Si le site passe sur un autre hébergement (nom de domaine pastamo.ch, par exemple), utiliser le fichier correspondant :
+Ces modèles de configuration ne sont pas appliqués par GitHub Pages. Si le site passe sur un hébergement permettant leur utilisation, choisir le fichier correspondant :
 
 | Hébergement | Fichier | Où le mettre |
 |---|---|---|
