@@ -628,7 +628,7 @@
       facts: ['Végétarien', 'Préparé à froid', 'Fait maison'] },
     pomodoro: { kicker: "L'essentielle", title: 'Pomodoro<em>.</em>', img: 'assets/film/still-pomodoro.webp?v=3',
       text: "Des tomates mijotées doucement, de l'huile d'olive et du basilic frais. Douce et généreuse, sans piquant : les enfants l'adorent, et elle met tout le monde d'accord.",
-      facts: ['Vegan', 'Kid friendly, sans piquant', 'Mijotée longtemps, faite maison'] },
+      facts: ['Végétarien', 'Kid friendly, sans piquant', 'Mijotée longtemps, faite maison'] },
   };
   const EVENTS = {
     festival: { kicker: 'Festivals', title: 'Des milliers de personnes, <em>une file qui avance.</em>', img: 'festival', type: 'Festival',
@@ -636,7 +636,7 @@
       facts: ["Jusqu'à 150 portions par heure et par poste", 'Postes ajoutés selon la fréquentation', 'Pasta Box qui se mange debout, à une main'] },
     sport: { kicker: 'Événements sportifs', title: "Le repas d'après l'effort, <em>prêt à l'arrivée.</em>", img: 'marathon', type: 'Événement sportif',
       text: "Courses, marathons, tournois : un plat de pâtes chaud, simple et sain, pour refaire le plein de glucides et bien récupérer. Pour les participants, les bénévoles et le public, avec des quantités prévues à l'avance avec l'organisation.",
-      facts: ['Des glucides pour la récupération', 'Service rapide aux heures d’arrivée', 'Trois sauces, dont une vegan'] },
+      facts: ['Des glucides pour la récupération', 'Service rapide aux heures d’arrivée', 'Trois sauces, dont deux végétariennes'] },
     entreprise: { kicker: 'Entreprises & B2B', title: 'Afterworks, séminaires, <em>portes ouvertes.</em>', img: 'entreprise', type: 'Entreprise / B2B',
       text: "Un stand qui cuisine devant vos équipes et vos invités : simple à accueillir, convivial, et chacun choisit sa sauce.",
       facts: ['Installation discrète, intérieur ou extérieur', 'Carte courte, adaptée aux régimes', 'Devis selon le nombre de convives'] },
@@ -645,7 +645,7 @@
       facts: ['Portions pour les petits et les grands', 'Stand autonome, rapide à installer', 'Pâtes artisanales de Genève, sauces faites maison'] },
     prive: { kicker: 'Événements privés', title: 'Mariages, anniversaires, <em>fêtes de famille.</em>', img: 'prive', type: 'Événement privé',
       text: "Un repas chaleureux et sans chichis pour vos invités, dans votre jardin ou votre salle.",
-      facts: ['Formule adaptée au nombre d’invités', 'Bolognese au bœuf suisse halal, Pesto végétarien, Pomodoro vegan', "Emplacement, électricité et eau : on fait le point avec vous avant l'événement"] },
+      facts: ['Formule adaptée au nombre d’invités', 'Bolognese au bœuf suisse halal, Pesto et Pomodoro végétariens', "Emplacement, électricité et eau : on fait le point avec vous avant l'événement"] },
   };
   const dialog = document.getElementById('eventDialog');
   const $ = (id) => document.getElementById(id);
