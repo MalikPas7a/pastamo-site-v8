@@ -26,7 +26,7 @@
 <link rel="icon" href="assets/logo.svg?v=7" type="image/svg+xml">
 <link rel="stylesheet" href="css/fonts.css?v=1">
 <link rel="stylesheet" href="css/style.min.css?v=14">
-<link rel="stylesheet" href="css/brand.css?v=2">
+<link rel="stylesheet" href="css/brand.css?v=3">
 </head>
 <body>
 
@@ -148,6 +148,7 @@
             <button class="window" type="button" data-event="fete" aria-haspopup="dialog"><img src="assets/fenetres/fete-communale-mini.webp" alt="Stand Pasta Mo' sur un marché et une fête communale" loading="lazy" width="560" height="418"><span class="window-title">Fêtes communales &amp; marchés</span><span class="window-line">Une grande tablée de quartier</span></button>
             <button class="window" type="button" data-event="prive" aria-haspopup="dialog"><img src="assets/fenetres/prive-mini.webp" alt="Pâtes fraîches servies à un mariage ou une fête privée" loading="lazy" width="560" height="418"><span class="window-title">Événements privés</span><span class="window-line">Mariages, anniversaires, fêtes de famille</span></button>
           </div>
+          <p class="windows-more">En détail : <a href="pasta-party-course-a-pied.html">Courses à pied</a> · <a href="traiteur-entreprise-geneve.html">Entreprises</a> · <a href="traiteur-festival-geneve.html">Festivals &amp; marchés</a></p>
         </div>
       </div>
 
@@ -169,7 +170,10 @@
       <h2 class="title" id="eventTitle"></h2>
       <p class="lead" id="eventText"></p>
       <ul class="dialog-facts" id="eventFacts"></ul>
-      <a href="#contact" class="btn btn-gold" id="eventCta">Parler de mon événement</a>
+      <div class="dialog-actions">
+        <a href="#contact" class="btn btn-gold" id="eventCta">Parler de mon événement</a>
+        <a href="#" class="btn btn-line" id="eventMore" hidden>Voir la page</a>
+      </div>
     </div>
   </dialog>
 
@@ -232,6 +236,6 @@
   </nav>
 </footer>
 
-<script src="js/main.min.js?v=16" defer></script>
+<script src="js/main.min.js?v=17" defer></script>
 </body>
 </html>

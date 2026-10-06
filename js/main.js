@@ -631,16 +631,16 @@
       facts: ['Végétarien', 'Kid friendly, sans piquant', 'Mijotée longtemps, faite maison'] },
   };
   const EVENTS = {
-    festival: { kicker: 'Festivals', title: 'Des milliers de personnes, <em>une file qui avance.</em>', img: 'festival', type: 'Festival',
+    festival: { page: 'traiteur-festival-geneve.html', kicker: 'Festivals', title: 'Des milliers de personnes, <em>une file qui avance.</em>', img: 'festival', type: 'Festival',
       text: "Grosses affluences et longues soirées : on dimensionne le nombre de postes avec vous, pour servir chaud et vite du premier concert au dernier.",
       facts: ["Jusqu'à 150 portions par heure et par poste", 'Postes ajoutés selon la fréquentation', 'Pasta Box qui se mange debout, à une main'] },
-    sport: { kicker: 'Événements sportifs', title: "Le repas d'après l'effort, <em>prêt à l'arrivée.</em>", img: 'marathon', type: 'Événement sportif',
+    sport: { page: 'pasta-party-course-a-pied.html', kicker: 'Événements sportifs', title: "Le repas d'après l'effort, <em>prêt à l'arrivée.</em>", img: 'marathon', type: 'Événement sportif',
       text: "Courses, marathons, tournois : un plat de pâtes chaud, simple et sain, pour refaire le plein de glucides et bien récupérer. Pour les participants, les bénévoles et le public, avec des quantités prévues à l'avance avec l'organisation.",
       facts: ['Des glucides pour la récupération', 'Service rapide aux heures d’arrivée', 'Trois sauces, dont deux végétariennes'] },
-    entreprise: { kicker: 'Entreprises & B2B', title: 'Afterworks, séminaires, <em>portes ouvertes.</em>', img: 'entreprise', type: 'Entreprise / B2B',
+    entreprise: { page: 'traiteur-entreprise-geneve.html', kicker: 'Entreprises & B2B', title: 'Afterworks, séminaires, <em>portes ouvertes.</em>', img: 'entreprise', type: 'Entreprise / B2B',
       text: "Un stand qui cuisine devant vos équipes et vos invités : simple à accueillir, convivial, et chacun choisit sa sauce.",
       facts: ['Installation discrète, intérieur ou extérieur', 'Carte courte, adaptée aux régimes', 'Devis selon le nombre de convives'] },
-    fete: { kicker: 'Fêtes communales & marchés', title: 'Une grande tablée <em>de quartier.</em>', img: 'fete-communale', type: 'Fête communale / marché',
+    fete: { page: 'traiteur-festival-geneve.html', kicker: 'Fêtes communales & marchés', title: 'Une grande tablée <em>de quartier.</em>', img: 'fete-communale', type: 'Fête communale / marché',
       text: "Des familles, des voisins, toutes les générations : une box généreuse à prix accessible, servie sans attente.",
       facts: ['Portions pour les petits et les grands', 'Stand autonome, rapide à installer', 'Pâtes artisanales de Genève, sauces faites maison'] },
     prive: { kicker: 'Événements privés', title: 'Mariages, anniversaires, <em>fêtes de famille.</em>', img: 'prive', type: 'Événement privé',
@@ -666,6 +666,7 @@
     $('eventImg').src = img;
     $('eventImg').alt = d.kicker;
     $('eventCta').textContent = ctaLabel;
+    const more = $('eventMore'); if (d.page) { more.href = d.page; more.hidden = false; } else { more.hidden = true; }
     if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); // anciens navigateurs sans <dialog>
   };
   windows.forEach((w) => w.addEventListener('click', () => {
