@@ -618,11 +618,11 @@
   /* ---------- Fiches détaillées : pâtes, sauces et événements, au clic ---------- */
   const DETAILS = {
     artisan: { kicker: "D'ici", title: 'Des pâtes fraîches <em>d’un artisan genevois.</em>', img: 'assets/film/still-artisan.webp?v=3',
-      text: "Nos pâtes fraîches viennent d'un artisan de Genève. Pour le reste, on choisit le circuit court dès que possible : du bœuf suisse, des légumes du maraîcher. Trois recettes de famille, des sauces fabriquées à Genève, et une Pasta Box qui se tient d'une main.",
-      facts: ["Pâtes fraîches d'un artisan genevois", 'Bœuf suisse et légumes du maraîcher, en circuit court dès que possible', 'Sauces fabriquées à Genève, mijotées longtemps'] },
+      text: "Nos pâtes fraîches viennent d'un artisan de Genève. Trois recettes de famille, des sauces fabriquées à Genève, et une Pasta Box qui se tient d'une main.",
+      facts: ["Pâtes fraîches d'un artisan genevois", 'Cuisinées à la minute, servies chaudes', 'Sauces fabriquées à Genève, mijotées longtemps'] },
     bolognese: { kicker: 'La généreuse', title: 'Bolognese<em>.</em>', img: 'assets/film/still-bolognese.webp?v=4',
-      text: "Un ragù de bœuf suisse et de légumes du maraîcher, mijoté longtemps, avec des tomates et beaucoup de patience. Une sauce faite avec amour.",
-      facts: ['Bœuf suisse, halal', 'Légumes du maraîcher', 'Mijotée longtemps, fabriquée à Genève'] },
+      text: "Un ragù de bœuf et de légumes, mijoté longtemps, avec des tomates et beaucoup de patience. Une sauce faite avec amour.",
+      facts: ['Ragù de bœuf', 'Tomates et légumes', 'Mijotée longtemps, fabriquée à Genève'] },
     pesto: { kicker: 'La fraîche', title: 'Pesto <em>Verde.</em>', img: 'assets/film/still-pesto.webp?v=4',
       text: "Basilic frais, pignons, parmesan et huile d'olive, préparé à froid pour garder tout son parfum. La recette la plus fraîche de la carte.",
       facts: ['Végétarien', 'Préparé à froid', 'Fabriqué à Genève'] },
@@ -645,7 +645,7 @@
       facts: ['Portions pour les petits et les grands', 'Stand autonome, rapide à installer', 'Pâtes artisanales de Genève, sauces fabriquées à Genève'] },
     prive: { kicker: 'Événements privés', title: 'Mariages, anniversaires, <em>fêtes de famille.</em>', img: 'prive', type: 'Événement privé',
       text: "Un repas chaleureux et sans chichis pour vos invités, dans votre jardin ou votre salle.",
-      facts: ['Formule adaptée au nombre d’invités', 'Bolognese au bœuf suisse halal, Pesto et Pomodoro végétariens', "Emplacement, électricité et eau : on fait le point avec vous avant l'événement"] },
+      facts: ['Formule adaptée au nombre d’invités', 'Bolognese au bœuf, Pesto et Pomodoro végétariens', "Emplacement, électricité et eau : on fait le point avec vous avant l'événement"] },
   };
   const dialog = document.getElementById('eventDialog');
   const $ = (id) => document.getElementById(id);
