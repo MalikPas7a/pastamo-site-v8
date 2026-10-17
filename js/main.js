@@ -75,7 +75,7 @@
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true, from: 2.1, lead: 2.3 },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '14'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '15'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
   // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête (Pomodoro : 2,5 s, la vapeur accompagne le basilic)
   const LOOP_FROM = 1;
@@ -618,17 +618,17 @@
   /* ---------- Fiches détaillées : pâtes, sauces et événements, au clic ---------- */
   const DETAILS = {
     artisan: { kicker: "D'ici", title: 'Des pâtes fraîches <em>d’un artisan genevois.</em>', img: 'assets/film/still-artisan.webp?v=3',
-      text: "Nos pâtes fraîches viennent d'un artisan de Genève. Pour le reste, on choisit le circuit court dès que possible : du bœuf suisse, des légumes du maraîcher. Trois recettes de famille, des sauces faites maison, et une Pasta Box qui se tient d'une main.",
-      facts: ["Pâtes fraîches d'un artisan genevois", 'Bœuf suisse et légumes du maraîcher, en circuit court dès que possible', 'Sauces faites maison, mijotées longtemps'] },
-    bolognese: { kicker: 'La généreuse', title: 'Bolognese<em>.</em>', img: 'assets/film/still-bolognese.webp?v=3',
-      text: "Un ragù de bœuf suisse et de légumes du maraîcher, mijoté longtemps comme à la maison, avec des tomates et beaucoup de patience. Une sauce faite avec amour.",
-      facts: ['Bœuf suisse, halal', 'Légumes du maraîcher', 'Mijotée longtemps, faite maison'] },
-    pesto: { kicker: 'La fraîche', title: 'Pesto <em>Verde.</em>', img: 'assets/film/still-pesto.webp?v=3',
-      text: "Basilic frais, pignons, parmesan et huile d'olive, préparé à froid pour garder tout son parfum. La recette la plus fraîche de la maison.",
-      facts: ['Végétarien', 'Préparé à froid', 'Fait maison'] },
-    pomodoro: { kicker: "L'essentielle", title: 'Pomodoro<em>.</em>', img: 'assets/film/still-pomodoro.webp?v=3',
+      text: "Nos pâtes fraîches viennent d'un artisan de Genève. Pour le reste, on choisit le circuit court dès que possible : du bœuf suisse, des légumes du maraîcher. Trois recettes de famille, des sauces fabriquées à Genève, et une Pasta Box qui se tient d'une main.",
+      facts: ["Pâtes fraîches d'un artisan genevois", 'Bœuf suisse et légumes du maraîcher, en circuit court dès que possible', 'Sauces fabriquées à Genève, mijotées longtemps'] },
+    bolognese: { kicker: 'La généreuse', title: 'Bolognese<em>.</em>', img: 'assets/film/still-bolognese.webp?v=4',
+      text: "Un ragù de bœuf suisse et de légumes du maraîcher, mijoté longtemps, avec des tomates et beaucoup de patience. Une sauce faite avec amour.",
+      facts: ['Bœuf suisse, halal', 'Légumes du maraîcher', 'Mijotée longtemps, fabriquée à Genève'] },
+    pesto: { kicker: 'La fraîche', title: 'Pesto <em>Verde.</em>', img: 'assets/film/still-pesto.webp?v=4',
+      text: "Basilic frais, pignons, parmesan et huile d'olive, préparé à froid pour garder tout son parfum. La recette la plus fraîche de la carte.",
+      facts: ['Végétarien', 'Préparé à froid', 'Fabriqué à Genève'] },
+    pomodoro: { kicker: "L'essentielle", title: 'Pomodoro<em>.</em>', img: 'assets/film/still-pomodoro.webp?v=4',
       text: "Des tomates mijotées doucement, de l'huile d'olive et du basilic frais. Douce et généreuse, sans piquant : les enfants l'adorent, et elle met tout le monde d'accord.",
-      facts: ['Végétarien', 'Kid friendly, sans piquant', 'Mijotée longtemps, faite maison'] },
+      facts: ['Végétarien', 'Kid friendly, sans piquant', 'Mijotée longtemps, fabriquée à Genève'] },
   };
   const EVENTS = {
     festival: { page: 'traiteur-festival-geneve.html', kicker: 'Festivals', title: 'Des milliers de personnes, <em>une file qui avance.</em>', img: 'festival', type: 'Festival',
@@ -642,7 +642,7 @@
       facts: ['Installation discrète, intérieur ou extérieur', 'Carte courte, adaptée aux régimes', 'Devis selon le nombre de convives'] },
     fete: { page: 'traiteur-festival-geneve.html', kicker: 'Fêtes communales & marchés', title: 'Une grande tablée <em>de quartier.</em>', img: 'fete-communale', type: 'Fête communale / marché',
       text: "Des familles, des voisins, toutes les générations : une box généreuse à prix accessible, servie sans attente.",
-      facts: ['Portions pour les petits et les grands', 'Stand autonome, rapide à installer', 'Pâtes artisanales de Genève, sauces faites maison'] },
+      facts: ['Portions pour les petits et les grands', 'Stand autonome, rapide à installer', 'Pâtes artisanales de Genève, sauces fabriquées à Genève'] },
     prive: { kicker: 'Événements privés', title: 'Mariages, anniversaires, <em>fêtes de famille.</em>', img: 'prive', type: 'Événement privé',
       text: "Un repas chaleureux et sans chichis pour vos invités, dans votre jardin ou votre salle.",
       facts: ['Formule adaptée au nombre d’invités', 'Bolognese au bœuf suisse halal, Pesto et Pomodoro végétariens', "Emplacement, électricité et eau : on fait le point avec vous avant l'événement"] },

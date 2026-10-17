@@ -1,6 +1,6 @@
 # Pasta Mo'
 
-> Traiteur événementiel et stand de street food italienne basé à Genève (Suisse). Pasta Mo' sert des pasta box : des pâtes fraîches d'un artisan genevois avec trois sauces faites maison (Bolognese, Pesto Verde, Pomodoro), sur place, pour les festivals, événements sportifs, événements d'entreprise, fêtes communales, marchés et événements privés.
+> Traiteur événementiel et stand de street food italienne basé à Genève (Suisse). Pasta Mo' sert des pasta box : des pâtes fraîches d'un artisan genevois avec trois sauces fabriquées à Genève (Bolognese, Pesto Verde, Pomodoro), sur place, pour les festivals, événements sportifs, événements d'entreprise, fêtes communales, marchés et événements privés.
 
 ## L'essentiel
 
