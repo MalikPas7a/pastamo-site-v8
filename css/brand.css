@@ -91,3 +91,8 @@
 @media (max-width: 820px) {
   .windows-more { padding: 0 20px; font-size: .85rem; }
 }
+
+/* Devis en ligne et précommande (appli Pasta Mo') */
+.online-quote { display: grid; gap: 14px; padding-top: 6px; }
+.online-quote p { margin: 0; opacity: .85; }
+.online-quote-actions { display: flex; flex-wrap: wrap; gap: 12px; }
