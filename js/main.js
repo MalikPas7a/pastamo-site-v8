@@ -65,17 +65,17 @@
      la plus sûre sur iPhone) : elle part exactement de l'image fixe de l'étape précédente et finit sur celle de la suivante.
      Un geste (défilement, glissement, flèche, « Suivant », clic sur une étape) passe à l'étape suivante ;
      revenir en arrière ou sauter plus loin se fait par un fondu. À l'arrivée, seule une légère vapeur continue de monter
-     (l'image de l'étape reste fixe au pixel près, la caméra ne bouge pas) ; aux pâtes fraîches, la farine a fini de tomber : image calme. */
+     (l'image de l'étape reste fixe au pixel près, la caméra ne bouge pas) ; aux pâtes fraîches, la farine tombe environ 2,5 s puis s'arrête : image calme (le texte apparaît pendant la chute, lead 1,7 s). */
   const STOPS = [
     { id: 'intro', show: ['intro'], layout: 'center' },
-    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine' },
+    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine', lead: 1.7 },
     { id: 'bolognese', show: ['bolognese'], layout: 'left', loop: true },
     { id: 'pesto', show: ['pesto'], layout: 'left', loop: true },
     { id: 'pomodoro', show: ['pomodoro'], layout: 'left', loop: true, from: 2.5 },
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true, from: 2.1, lead: 2.3 },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '16'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '17'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
   // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête (Pomodoro : 2,5 s, la vapeur accompagne le basilic)
   const LOOP_FROM = 1;
