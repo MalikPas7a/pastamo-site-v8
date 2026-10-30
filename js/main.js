@@ -65,17 +65,17 @@
      la plus sûre sur iPhone) : elle part exactement de l'image fixe de l'étape précédente et finit sur celle de la suivante.
      Un geste (défilement, glissement, flèche, « Suivant », clic sur une étape) passe à l'étape suivante ;
      revenir en arrière ou sauter plus loin se fait par un fondu. À l'arrivée, seule une légère vapeur continue de monter
-     (l'image de l'étape reste fixe au pixel près, la caméra ne bouge pas) ; aux pâtes fraîches, la farine continue de tomber (boucle sans fin, comme la vapeur des box). */
+     (l'image de l'étape reste fixe au pixel près, la caméra ne bouge pas) ; aux pâtes fraîches, la farine a fini de tomber : image calme. */
   const STOPS = [
     { id: 'intro', show: ['intro'], layout: 'center' },
-    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine', loop: true },
+    { id: 'artisan', show: ['artisan'], layout: 'left', bed: 'cuisine' },
     { id: 'bolognese', show: ['bolognese'], layout: 'left', loop: true },
     { id: 'pesto', show: ['pesto'], layout: 'left', loop: true },
     { id: 'pomodoro', show: ['pomodoro'], layout: 'left', loop: true, from: 2.5 },
     { id: 'evenements', show: ['evenements'], layout: 'stand', bed: 'terrasse', loop: true, from: 2.1, lead: 2.3 },
     { id: 'histoire', show: ['histoire'], layout: 'story' },
   ];
-  const FILM_V = '17'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
+  const FILM_V = '16'; // à changer à chaque nouveau montage, pour que les navigateurs ne gardent pas l'ancien en cache
   // la dernière seconde de chaque mouvement est déjà fondue dans le début de la boucle de vapeur (film_final.py, LOOP_FROM) :
   // la boucle reprend donc à 1 s, sur l'image exacte où le mouvement s'arrête (Pomodoro : 2,5 s, la vapeur accompagne le basilic)
   const LOOP_FROM = 1;
@@ -553,25 +553,6 @@
     const s = stepFromScroll();
     if (s !== S) { gesture = true; goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play'); }
   }, { passive: true });
-  // Molette et pavé tactile (ordinateur) : un petit coup de molette ne suffisait pas à franchir la moitié de l'écran,
-  // l'aimantation ramenait la page sur l'étape et rien ne se passait. Désormais, sur le film, tout geste vers le bas ou le haut
-  // passe à l'étape voisine ; l'élan qui suit (pavé tactile) est ignoré jusqu'à ce que la molette se repose.
-  let wheelAcc = 0, wheelIdle = 0, wheelLocked = false;
-  addEventListener('wheel', (e) => {
-    if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;   // zoom ou geste horizontal
-    const r = section.getBoundingClientRect();
-    if (r.top > 2 || r.bottom < innerHeight - 2) return;                // hors du film : défilement normal
-    const to = S + Math.sign(e.deltaY);
-    if (to < 0 || to > STOPS.length - 1) return;                        // avant l'enseigne, après l'histoire : défilement normal
-    e.preventDefault();
-    clearTimeout(wheelIdle);
-    wheelIdle = setTimeout(() => { wheelLocked = false; wheelAcc = 0; }, 220);
-    if (wheelLocked) return;
-    wheelAcc += e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? innerHeight : 1);
-    if (Math.abs(wheelAcc) < 24) return;
-    wheelLocked = true; wheelAcc = 0; userMoved = true;
-    scrollToStep(to);
-  }, { passive: false });
   nextBtn.addEventListener('click', () => {
     if (S < STOPS.length - 1) scrollToStep(S + 1);
     else { holdScroll(1200); scrollToY(contact.getBoundingClientRect().top + window.scrollY); }
@@ -652,10 +633,10 @@
   const EVENTS = {
     festival: { page: 'traiteur-festival-geneve.html', kicker: 'Festivals', title: 'Des milliers de personnes, <em>une file qui avance.</em>', img: 'festival', type: 'Festival',
       text: "Grosses affluences et longues soirées : on dimensionne le nombre de postes avec vous, pour servir chaud et vite du premier concert au dernier.",
-      facts: ['Débit pensé pour les grosses affluences', 'Postes ajoutés selon la fréquentation', 'Pasta Box qui se mange debout, à une main'] },
+      facts: ["Jusqu'à 150 portions par heure et par poste", 'Postes ajoutés selon la fréquentation', 'Pasta Box qui se mange debout, à une main'] },
     sport: { page: 'pasta-party-course-a-pied.html', kicker: 'Événements sportifs', title: "Le repas d'après l'effort, <em>prêt à l'arrivée.</em>", img: 'marathon', type: 'Événement sportif',
-      text: "Courses, marathons, tournois : un plat de pâtes chaud et généreux, prêt quand les coureurs franchissent la ligne. Pour les participants, les bénévoles et le public, avec des quantités prévues à l'avance avec l'organisation.",
-      facts: ['Pâtes chaudes dès l’arrivée', 'Service rapide aux heures d’arrivée', 'Trois sauces, dont deux végétariennes'] },
+      text: "Courses, marathons, tournois : un plat de pâtes chaud, simple et sain, pour refaire le plein de glucides et bien récupérer. Pour les participants, les bénévoles et le public, avec des quantités prévues à l'avance avec l'organisation.",
+      facts: ['Des glucides pour la récupération', 'Service rapide aux heures d’arrivée', 'Trois sauces, dont deux végétariennes'] },
     entreprise: { page: 'traiteur-entreprise-geneve.html', kicker: 'Entreprises & B2B', title: 'Afterworks, séminaires, <em>portes ouvertes.</em>', img: 'entreprise', type: 'Entreprise / B2B',
       text: "Un stand qui cuisine devant vos équipes et vos invités : simple à accueillir, convivial, et chacun choisit sa sauce.",
       facts: ['Installation discrète, intérieur ou extérieur', 'Carte courte, adaptée aux régimes', 'Devis selon le nombre de convives'] },
