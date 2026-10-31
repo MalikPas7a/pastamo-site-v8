@@ -347,10 +347,8 @@
     arrive(i);
     cur.classList.remove('is-instant', 'is-front');
     cur.classList.add('is-slow');
-    dissolving = Date.now();
     setTimeout(() => cur.classList.remove('is-slow'), 1000);
   };
-  let dissolving = 0;
   let waitingFor = null;
   const playNext = () => {
     if (playing || cutting || !queue.length || waitingFor !== null) return;
@@ -478,14 +476,16 @@
 
   const goTo = (s, how) => {
     if (s === S && how !== 'init') return;
-    // pendant un fondu direct (moins d'une seconde), un nouveau geste en avant ne fait pas sauter l'étape qui apparaît
-    if (how !== 'init' && s > S && Date.now() - dissolving < 1000) { holdScroll(400); window.scrollTo(0, steps[S].getBoundingClientRect().top + window.scrollY); return; }
+    // On ne ramène jamais la page en arrière pendant que le doigt la pousse (sur iPhone, ce recalage combattait l'élan et
+    // l'aimantation : la page tremblait ou revenait). Le film suit la page : un mouvement en attente de réseau est abandonné.
     if (waitingFor !== null && how !== 'init') {
-      if (s > waitingFor) { holdScroll(400); window.scrollTo(0, steps[waitingFor].getBoundingClientRect().top + window.scrollY); return; }
       waitingFor = null;
       queue.length = 0;
     }
     const last = queue.length ? queue[queue.length - 1] : (playing ? +playing.dataset.move : at);
+    // Défilement plus rapide que le film : au-delà d'un mouvement d'avance, on ne les empile pas (le film restait plusieurs
+    // secondes en retard sur la page) ; on passe en fondu court directement à l'étape où se trouve le visiteur
+    const behind = s === last + 1 && queue.length > 0;
     S = s;
     const st = STOPS[s];
     section.dataset.layout = st.layout;
@@ -495,7 +495,7 @@
     nextBtn.querySelector('span').textContent = s === STOPS.length - 1 ? 'Contact' : 'Suivant';
     if (st.bed) sound.setBed(st.bed);
     if (how === 'init') { at = s; front(null); arrive(s); return; }
-    if (s === last + 1 && !reduced && how !== 'jump') {
+    if (s === last + 1 && !reduced && how !== 'jump' && !behind) {
       queue.push(s);
       updateLayers();
       if (playing) prepare(vids.find((v) => v !== playing), queue[0]);
@@ -525,9 +525,19 @@
     holdScroll(400);
     window.scrollTo(0, top);
   };
-  // Un geste = une étape : dès que le défilement passe à l'écran suivant, le mouvement part ; ensuite on ignore l'élan (sur
-  // iPhone il peut dépasser puis revenir, ce qui faisait sauter les pâtes fraîches) jusqu'à ce que la page soit posée
-  let gesture = false, settleTimer = 0;
+  // Le film suit la page : une étape est prise dès que la page se pose sur son écran (proche du point d'aimantation et en
+  // train de ralentir). Un élan rapide qui traverse un écran sans s'y arrêter ne déclenche rien (sur iPhone, l'élan peut
+  // dépasser puis revenir, ce qui faisait sauter les pâtes fraîches) ; quand la page est immobile, on prend l'écran affiché.
+  // Avant, la première étape bloquait tout jusqu'à l'arrêt complet : en enchaînant vite les gestes, le film restait figé
+  // puis sautait plusieurs étapes d'un coup.
+  let settleTimer = 0, lastY = window.scrollY, lastT = performance.now(), speed = 0;
+  const landingStep = () => {
+    const h = steps[0].offsetHeight || innerHeight;
+    const pos = -section.getBoundingClientRect().top / h;
+    const k = Math.round(pos);
+    if (k < 0 || k > STOPS.length - 1 || Math.abs(pos - k) > 0.12) return null;
+    return k;
+  };
   // Ouverture ou rechargement : tant que le visiteur n'a pas touché l'écran (ni clavier, souris, molette), tout défilement vient
   // du navigateur (l'iPhone tente de remettre l'ancienne position, et l'aimantation posait alors la page sur les pâtes fraîches) :
   // on le remet en haut. Protection limitée aux 2 premières secondes.
@@ -542,16 +552,20 @@
     lastScrollAt = Date.now();
     if (!userMoved) { backToTop(); return; }
     if (programmatic) return;
+    const now = performance.now(), y = window.scrollY;
+    if (now > lastT) speed = Math.abs(y - lastY) / (now - lastT);
+    lastY = y; lastT = now;
     clearTimeout(settleTimer);
     settleTimer = setTimeout(() => {
-      gesture = false;
+      speed = 0;
       if (programmatic) return;
       const s = stepFromScroll();
       if (s !== S) goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play');
     }, 160);
-    if (gesture) return;
-    const s = stepFromScroll();
-    if (s !== S) { gesture = true; goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play'); }
+    // page qui se pose (moins d'un écran par seconde environ) sur l'écran d'une autre étape
+    if (speed > innerHeight / 700) return;
+    const s = landingStep();
+    if (s !== null && s !== S) goTo(s, Math.abs(s - S) > 1 ? 'jump' : 'play');
   }, { passive: true });
   nextBtn.addEventListener('click', () => {
     if (S < STOPS.length - 1) scrollToStep(S + 1);
