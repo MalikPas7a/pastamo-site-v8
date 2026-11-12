@@ -153,12 +153,12 @@ textarea{font:inherit;font-size:.92rem;width:100%;min-height:2.6em;padding:8px 1
       <p id="jour-intro"></p>
     </div>
     <div class="day">
-      <div><b>7 h 30</b> · Réception de la viande et des légumes déjà coupés chez Roberto. Contrôler la température de la viande (moins de 5 °C) et la noter.</div>
-      <div><b>8 h</b> · Pomodoro en premier (environ 1 h 15 par marmite) : elle est simple et libère le feu. Pendant qu'elle mijote, faire suer les légumes de la Bolognaise.</div>
-      <div><b>9 h</b> · Bolognaise : colorer la viande par 2 à 3 kg à la fois, puis tout réunir dans les grandes marmites avec les légumes. Mijoter 1 h 30 à 2 h.</div>
-      <div><b>Pendant la cuisson</b> · Goûter les touches à petite dose, choisir, puis les ajouter aux marmites.</div>
-      <div><b>Fin de cuisson</b> · Goûter, saler, noter la température (75 °C au moins) et peser chaque marmite.</div>
-      <div><b>Refroidir</b> · Bacs gastro de 5 cm au plus, dans l'eau glacée : moins de 10 °C en 2 h. Puis sachets sous vide de 2,5 kg (environ 16 box), étiquetés : sauce, événement, date. Meyrin au frigo (0 à 3 °C), Corrida au congélateur (-18 °C).</div>
+      <div><b>10 h 15</b> · Arrivée chez Roberto. La viande et les légumes déjà coupés sont livrés avant (vers 10 h). Contrôler la température de la viande (moins de 5 °C) et la noter, puis tout ranger au froid.</div>
+      <div><b>10 h 30</b> · Pomodoro en premier (environ 1 h 15 par marmite) : elle est simple et libère le feu. Pendant qu'elle mijote, faire suer les légumes de la Bolognaise.</div>
+      <div><b>11 h 30</b> · Bolognaise : colorer la viande par 2 à 3 kg à la fois (environ 1 h 30 pour tout), puis tout réunir dans les grandes marmites avec les légumes.</div>
+      <div><b>13 h à 15 h</b> · Mijotage de la Bolognaise. Pendant ce temps : refroidir et mettre en sachets la Pomodoro, goûter les touches à petite dose, choisir, puis les ajouter aux marmites. Pause repas.</div>
+      <div><b>15 h</b> · Fin de cuisson : goûter, saler, noter la température (75 °C au moins) et peser chaque marmite.</div>
+      <div><b>15 h à 18 h</b> · Refroidir : bacs gastro de 5 cm au plus, dans l'eau glacée, moins de 10 °C en 2 h. Puis sachets sous vide de 2,5 kg (environ 16 box), étiquetés : sauce, événement, date. Meyrin au frigo (0 à 3 °C), Corrida au congélateur (-18 °C). Nettoyage : fin vers 18 h 30 à 19 h.</div>
       <div><b>Après</b> · Sauce de Meyrin : 4 jours au frigo, réchauffée à 75 °C au moins le samedi 28.11. Sauce de la Corrida : décongélation au frigo dès le jeudi 03.12, réchauffée à 75 °C au moins le 05.12.</div>
     </div>
     <p class="warn">La part de Meyrin tient au frigo jusqu'au samedi (4 jours, refroidie vite et sous vide). La part de la Corrida (11 jours) se congèle le jour même, sauf si Roberto écrit sur les sachets une date limite qui va jusqu'au 05.12. Questions pour toi : combien de grandes marmites et de feux chez Roberto ? Une cellule de refroidissement et une machine sous vide ? Un congélateur assez grand pour environ 55 kg ? Tu veux de l'aide pour la journée ?</p>
@@ -297,7 +297,7 @@ function renderQty(){
   $("#meta-bolo").innerHTML = `<div><dt>Sauce cuite</dt><dd>${nb(k.boloCuit)} kg</dd></div><div><dt>Box</dt><dd>${Math.round((b.m+b.c)*MIX_B)} + 10 %</dd></div><div><dt>Dont Meyrin</dt><dd>${nb(b.m*MIX_B*S*MARGE)} kg</dd></div><div><dt>Dont Corrida</dt><dd>${nb(b.c*MIX_B*S*MARGE)} kg</dd></div><div><dt>Par kg de viande</dt><dd>≈ ${Math.round(k.boxLot)} box</dd></div>`;
   $("#ing-pomo").innerHTML = POMO.map(([n,q,u])=>`<li><span class="qty">${fmtQ(q*k.tom,u)}</span> ${n} <span class="lot">(${fmtQ(q,u)} par kg de tomates)</span></li>`).join("");
   $("#meta-pomo").innerHTML = `<div><dt>Sauce cuite</dt><dd>${nb(k.pomoCuit)} kg</dd></div><div><dt>Box</dt><dd>${Math.round((b.m+b.c)*MIX_P)} + 10 %</dd></div><div><dt>Dont Meyrin</dt><dd>${nb(b.m*MIX_P*S*MARGE)} kg</dd></div><div><dt>Dont Corrida</dt><dd>${nb(b.c*MIX_P*S*MARGE)} kg</dd></div><div><dt>Par kg de tomates</dt><dd>≈ ${nb(1000*POMO_RAW/1000*Y_P/1000/S)} box</dd></div>`;
-  $("#jour-intro").textContent = `Environ ${Math.round(k.boloCuit+k.pomoCuit)} kg de sauce cuite au total : ${nb(k.boloCuit,0)} kg de Bolognaise et ${nb(k.pomoCuit,0)} kg de Pomodoro. C'est une grosse journée pour une personne seule, compte 9 à 11 heures avec le refroidissement.`;
+  $("#jour-intro").textContent = `Environ ${Math.round(k.boloCuit+k.pomoCuit)} kg de sauce cuite au total : ${nb(k.boloCuit,0)} kg de Bolognaise et ${nb(k.pomoCuit,0)} kg de Pomodoro. En arrivant à 10 h 15, la journée finit vers 18 h 30 à 19 h, refroidissement et nettoyage compris. Une aide de 11 h à 14 h ferait gagner du temps.`;
 }
 
 const ALL = () => [...BASES.map(r=>[r,"base"]), ...TOUCHES.map(r=>[r,"touche"])];
