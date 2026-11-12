@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /serveur/
 Disallow: /outils/
+Disallow: /demo/
 
 Sitemap: https://pastamo.ch/sitemap.xml
