@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Carte BymyCar 18.12</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="/css/fonts.css">
+<style>
+/* Layout : une colonne de lecture, des fiches recette repliables, un bandeau de choix collant en bas. */
+:root{
+  --bg:#FFF1D6; --surface:#FFF8EA; --fg:#0B0908; --muted:#5a4433; --line:rgba(11,9,8,.14);
+  --terra:#C45B3F; --terra-ink:#9e4027; --on-terra:#FFF1D6;
+  --ok:#4f7a2c; --ok-bg:#e6efd6; --test:#9a6a12; --test-bg:#f6e7c4; --no:#8f2f22; --no-bg:#f4d9d2;
+  --display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --body:"Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B0908; --surface:#171210; --fg:#FFF1D6; --muted:#c9b59a; --line:rgba(255,241,214,.16);
+  --terra:#d9694b; --terra-ink:#ec8a6c; --on-terra:#0B0908;
+  --ok:#a9cf7a; --ok-bg:#1d2a12; --test:#e8b85a; --test-bg:#2c220e; --no:#f09a8a; --no-bg:#311511; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0908; --surface:#171210; --fg:#FFF1D6; --muted:#c9b59a; --line:rgba(255,241,214,.16);
+  --terra:#d9694b; --terra-ink:#ec8a6c; --on-terra:#0B0908;
+  --ok:#a9cf7a; --ok-bg:#1d2a12; --test:#e8b85a; --test-bg:#2c220e; --no:#f09a8a; --no-bg:#311511; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:760px;margin:0 auto;padding-block:28px 140px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:36px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.08}
+h1{font-size:clamp(2.3rem,7vw,3.4rem)}
+h1 em{color:var(--terra-ink)}
+h2{font-size:clamp(1.7rem,4.5vw,2.2rem)}
+h3{font-size:1.6rem}
+p{margin:0}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-ink);font-weight:600}
+.intro{display:flex;flex-direction:column;gap:14px}
+.intro p{max-width:62ch;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.92rem}
+.facts span{white-space:nowrap}
+.facts b{font-weight:600}
+.howto{border-left:3px solid var(--terra);padding:4px 0 4px 14px;font-size:.95rem;max-width:62ch}
+.scale{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.95rem}
+.scale input{width:5.5em;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:16px}
+.sec-head{display:flex;flex-direction:column;gap:6px}
+.sec-head p{color:var(--muted);max-width:62ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.card.ok{border-color:var(--ok)} .card.test{border-color:var(--test)} .card.no{opacity:.72}
+.card-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.tag{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.desc{max-width:62ch}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 16px;margin:0;padding:12px 0;border-block:1px solid var(--line)}
+.meta div{min-width:0}
+.meta dt{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meta dd{margin:2px 0 0;font-weight:500;font-variant-numeric:tabular-nums}
+details{border-radius:6px}
+summary{cursor:pointer;font-weight:600;color:var(--terra-ink);padding:4px 0;list-style-position:outside}
+summary:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+.recipe{display:grid;grid-template-columns:1fr 1.3fr;gap:20px;padding-top:10px}
+@media (max-width:620px){.recipe{grid-template-columns:1fr}}
+.recipe h4{margin:0 0 6px;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.recipe ul,.recipe ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+.qty{font-variant-numeric:tabular-nums;font-weight:600}
+.when{font-weight:600}
+.note-r{font-size:.9rem;color:var(--muted);margin-top:10px}
+.choice{display:flex;flex-direction:column;gap:10px}
+.choice-label{font-size:.85rem;font-weight:600}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{font:inherit;font-size:.92rem;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.seg button[aria-pressed="true"][data-v="ok"]{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.seg button[aria-pressed="true"][data-v="test"]{background:var(--test-bg);border-color:var(--test);color:var(--test)}
+.seg button[aria-pressed="true"][data-v="no"]{background:var(--no-bg);border-color:var(--no);color:var(--no)}
+textarea{font:inherit;font-size:.92rem;width:100%;min-height:2.6em;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);resize:vertical}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--fg);color:var(--bg);padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:5}
+.bar-in{max-width:760px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.bar-count{font-size:.92rem}
+.bar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:600;font-size:.95rem;padding:10px 16px;border-radius:8px;border:0;cursor:pointer;background:var(--terra);color:var(--on-terra)}
+.btn.ghost{background:transparent;color:var(--bg);border:1px solid currentColor}
+.btn:disabled{opacity:.5;cursor:default}
+.status{font-size:.85rem;min-height:1.2em}
+.recap{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;white-space:pre-wrap;font-size:.92rem;font-variant-numeric:tabular-nums}
+.foot{font-size:.85rem;color:var(--muted);max-width:62ch}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .2s,opacity .2s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Pasta Mo' · pour Morgane</span>
+    <h1>Soirée BymyCar, <em>quelles entrées on fait&nbsp;?</em></h1>
+    <p>Pour le repas de fin d'année du personnel de BymyCar. Les pâtes (nos 3 sauces) et le tiramisu Guerrazzi sont déjà prévus. Il reste à choisir l'entrée : des verrines salées, une salade, ou un mélange des deux.</p>
+    <div class="facts">
+      <span><b>Ven. 18.12.2026</b></span>
+      <span>Apéritif <b>18 h 30</b>, repas <b>19 h 30</b></span>
+      <span><b>80</b> personnes</span>
+      <span>Intérieur, électricité OK, eau à confirmer</span>
+      <span>Quelques végétariens</span>
+    </div>
+    <p class="howto">Pour chaque recette, choisis <b>Faisable</b>, <b>À tester</b> ou <b>Non</b>, et ajoute une remarque si besoin. Ensuite, appuie sur <b>Envoyer mes choix</b> en bas de la page. Les quantités se recalculent si on change le nombre de personnes.</p>
+    <label class="scale" for="guests">Quantités calculées pour
+      <input id="guests" type="number" min="10" max="400" step="5" value="80" inputmode="numeric"> personnes
+    </label>
+  </header>
+
+  <section aria-labelledby="h-verrines">
+    <div class="sec-head">
+      <span class="eyebrow">Option 1</span>
+      <h2 id="h-verrines">Trois verrines salées</h2>
+      <p>Servies pendant l'apéritif, une de chaque par personne, soit 3 verrines. Les trois sont végétariennes, donc tout le monde peut manger tout.</p>
+    </div>
+    <div id="list-verrines" class="list"></div>
+  </section>
+
+  <section aria-labelledby="h-salades">
+    <div class="sec-head">
+      <span class="eyebrow">Option 2</span>
+      <h2 id="h-salades">Deux salades simples</h2>
+      <p>Une salade en bol individuel, à la place des verrines ou avec une seule verrine. Tout se prépare la veille, et la vinaigrette s'ajoute au moment de servir.</p>
+    </div>
+    <div id="list-salades" class="list"></div>
+  </section>
+
+  <section aria-labelledby="h-recap">
+    <div class="sec-head">
+      <span class="eyebrow">Récapitulatif</span>
+      <h2 id="h-recap">Tes choix</h2>
+    </div>
+    <div class="recap" id="recap" aria-live="polite"></div>
+    <label for="general" class="choice-label">Un mot pour Malik (formule préférée, matériel à prévoir, autre idée…)</label>
+    <textarea id="general" rows="3" placeholder="Ex. : verrines 1 et 2 + salade roquette, il faut 240 verrines de 120 ml"></textarea>
+    <p class="foot">Les coûts sont des estimations au prix du marché, sauf le pesto Roberto et les tomates (listes de prix des fournisseurs). Verrines jetables comptées à 0.25 CHF, bols à 0.30 CHF. Budget du client : 50 CHF par personne, tout compris.</p>
+  </section>
+</div>
+
+<div class="bar" role="region" aria-label="Envoi des choix">
+  <div class="bar-in">
+    <div>
+      <div class="bar-count" id="count">0 recette sur 5 choisie</div>
+      <div class="status" id="status" aria-live="polite"></div>
+    </div>
+    <div class="bar-actions">
+      <button class="btn ghost" id="copy" type="button">Copier</button>
+      <button class="btn" id="send" type="button">Envoyer mes choix</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE = 80;
+const RECIPES = [
+  {id:"v1", group:"verrines", name:"Caprese en verrine", tag:"Végétarienne · sans cuisson",
+   desc:"Tomates cerises et perles de mozzarella, une pointe de pesto, du basilic frais et un éclat de gressin pour le croquant.",
+   meta:{"Préparation":"1 h 15 à 2","Cuisson":"aucune","Quand":"le jour même, 4 h avant au plus","Difficulté":"facile","Matériel":"frigo, 80 verrines de 120 ml","Coût estimé":"~1.35 CHF / pers."},
+   ing:[["tomates cerises",2.4,"kg"],["perles de mozzarella",2.4,"kg"],["pesto Roberto",0.5,"kg"],["basilic frais",4,"bottes"],["gressins",0.4,"kg"],["huile d'olive",0.2,"l"],["sel, poivre",null,""]],
+   steps:[["Jour J","Couper les tomates cerises en deux, saler, poivrer, arroser d'un filet d'huile."],["Jour J","Égoutter les perles de mozzarella et les sécher sur un linge."],["Jour J","Dresser en couches tomates et mozzarella, ajouter une petite cuillère de pesto. Garder au frigo, filmé."],["Sur place","Au moment de servir : gressin concassé et une feuille de basilic."]],
+   tip:"La plus facile des trois : rien à cuire, rien à tester. Les gressins se mettent au dernier moment pour rester croquants."},
+  {id:"v2", group:"verrines", name:"Ricotta au citron, tomates séchées et pistaches", tag:"Végétarienne · sans cuisson",
+   desc:"Une crème de ricotta fouettée au citron, des tomates séchées hachées et des pistaches concassées.",
+   meta:{"Préparation":"1 h","Cuisson":"aucune (pistaches grillées 5 min si possible)","Quand":"crème la veille, montage le jour même","Difficulté":"facile","Matériel":"fouet ou batteur, poche à douille, 80 verrines","Coût estimé":"~1.05 CHF / pers."},
+   ing:[["ricotta",3.2,"kg"],["citrons bio",4,"pièces"],["tomates séchées à l'huile",0.8,"kg"],["pistaches décortiquées",0.3,"kg"],["basilic frais",3,"bottes"],["huile d'olive",0.1,"l"],["sel, poivre",null,""]],
+   steps:[["Veille","Fouetter la ricotta avec le zeste des citrons, un peu de jus, l'huile, du sel et du poivre. Goûter, garder au frigo."],["Veille","Égoutter et hacher grossièrement les tomates séchées."],["Jour J","Griller les pistaches 5 min à sec, puis les concasser."],["Jour J","Mettre la crème en poche, en remplir les verrines aux deux tiers, ajouter les tomates séchées."],["Sur place","Pistaches et basilic au moment de servir."]],
+   tip:"Se fait presque entièrement la veille. À goûter une fois pour régler le citron et le sel."},
+  {id:"v3", group:"verrines", name:"Velouté de courge rôtie, parmesan et amaretti", tag:"Végétarienne · de saison",
+   desc:"Un velouté de butternut rôtie, servi tiède en verrine, avec des copeaux de parmesan et des amaretti émiettés. Très décembre.",
+   meta:{"Préparation":"2 h 30, dont 45 min de four","Cuisson":"four 200 °C, puis casserole","Quand":"velouté la veille, versé sur place","Difficulté":"moyenne","Matériel":"four, mixeur plongeant, plaque ou réchaud pour tiédir, 80 verrines résistantes à la chaleur","Coût estimé":"~0.70 CHF / pers."},
+   ing:[["courge butternut (brute)",6,"kg"],["oignons",0.3,"kg"],["bouillon de légumes",1.5,"l"],["crème entière",0.5,"l"],["parmesan",0.3,"kg"],["amaretti",0.25,"kg"],["huile d'olive, muscade, sel, poivre",null,""]],
+   steps:[["Veille","Éplucher la courge, la couper en cubes avec les oignons, huiler, saler. Rôtir 35 à 45 min à 200 °C."],["Veille","Mixer avec le bouillon chaud et la crème, assaisonner (muscade). Refroidir vite et garder au frigo."],["Sur place","Réchauffer doucement, verser environ 50 ml par verrine."],["Sur place","Copeaux de parmesan et amaretti émiettés juste avant de servir."]],
+   tip:"La moins chère et la plus festive, mais elle demande un four la veille et de quoi la tiédir sur place. Sinon, elle peut se servir froide, mais c'est moins bon en décembre. À tester une fois avant."},
+  {id:"s1", group:"salades", name:"Salade de roquette, parmesan et tomates cerises", tag:"Végétarienne · sans cuisson",
+   desc:"La salade italienne classique : roquette, tomates cerises, copeaux de parmesan et vinaigrette au balsamique.",
+   meta:{"Préparation":"1 h","Cuisson":"aucune (pignons grillés en option)","Quand":"lavage la veille, dressage le jour même","Difficulté":"facile","Matériel":"essoreuse, économe, 80 bols kraft avec couvercle","Coût estimé":"~1.45 CHF / pers. (1.65 avec pignons)"},
+   ing:[["roquette",3,"kg"],["tomates cerises",2.4,"kg"],["parmesan en bloc",0.8,"kg"],["pignons (option)",0.3,"kg"],["huile d'olive",0.4,"l"],["vinaigre balsamique",0.15,"l"],["sel, poivre",null,""]],
+   steps:[["Veille","Laver et bien essorer la roquette, la garder au frigo dans un linge."],["Veille","Préparer la vinaigrette (huile, balsamique, sel, poivre) en bouteille."],["Jour J","Couper les tomates cerises, faire les copeaux de parmesan à l'économe."],["Jour J","Dresser en bols : roquette, tomates, copeaux. Fermer, garder au frais."],["Sur place","Vinaigrette au moment de servir."]],
+   tip:"La plus simple et la plus « pasta ». La vinaigrette se met au dernier moment, sinon la roquette retombe."},
+  {id:"s2", group:"salades", name:"Salade d'hiver, pommes, noix et croûtons", tag:"Végétarienne · de saison",
+   desc:"Salade mêlée, pommes croquantes, noix et croûtons dorés, vinaigrette moutarde et miel.",
+   meta:{"Préparation":"1 h 15","Cuisson":"croûtons au four, 10 min","Quand":"croûtons et vinaigrette la veille","Difficulté":"facile","Matériel":"four, essoreuse, 80 bols kraft","Coût estimé":"~0.90 CHF / pers."},
+   ing:[["salade mêlée ou mâche",3,"kg"],["pommes (Gala ou Pink Lady)",1.2,"kg"],["noix",0.4,"kg"],["pain de la veille pour croûtons",0.6,"kg"],["huile",0.4,"l"],["vinaigre de cidre",0.12,"l"],["moutarde",80,"g"],["miel",60,"g"]],
+   steps:[["Veille","Couper le pain en dés, huiler, saler, dorer 10 min au four. Garder dans une boîte fermée."],["Veille","Vinaigrette : moutarde, miel, vinaigre, puis l'huile en fouettant."],["Jour J","Laver et essorer la salade, concasser les noix."],["Jour J","Couper les pommes en fines lamelles au dernier moment, avec un peu de citron pour qu'elles ne noircissent pas. Dresser en bols."],["Sur place","Croûtons et vinaigrette au moment de servir."]],
+   tip:"La moins chère. Les pommes se coupent le plus tard possible."}
+];
+
+const $ = s => document.querySelector(s);
+const state = {choices:{}, general:""};
+let db = null, saving = false;
+
+function fmt(q, unit, factor){
+  if(q==null) return "";
+  let v = q*factor;
+  if(unit==="pièces"||unit==="bottes"){ v = Math.ceil(v); return v+" "+unit; }
+  if(unit==="g"){ return Math.round(v)+" g"; }
+  if(unit==="kg" && v<1){ return Math.round(v*1000/10)*10+" g"; }
+  return (Math.round(v*10)/10).toString().replace(".",",")+" "+unit;
+}
+function fmtL(q,unit,factor){
+  if(unit==="l"){ const v=q*factor; return v<1 ? Math.round(v*10*10)/10+" dl" : (Math.round(v*10)/10).toString().replace(".",",")+" l"; }
+  return fmt(q,unit,factor);
+}
+
+function card(r){
+  const el = document.createElement("article");
+  el.className = "card"; el.id = "card-"+r.id;
+  const meta = Object.entries(r.meta).map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+  el.innerHTML = `
+    <div class="card-top"><h3>${r.name}</h3><span class="tag">${r.tag}</span></div>
+    <p class="desc">${r.desc}</p>
+    <dl class="meta">${meta}</dl>
+    <details>
+      <summary>Voir la recette (<span class="n-g">80</span> personnes)</summary>
+      <div class="recipe">
+        <div><h4>Ingrédients</h4><ul class="ing"></ul></div>
+        <div><h4>Étapes</h4><ol>${r.steps.map(([w,t])=>`<li><span class="when">${w} :</span> ${t}</li>`).join("")}</ol></div>
+      </div>
+      <p class="note-r">${r.tip}</p>
+    </details>
+    <div class="choice">
+      <span class="choice-label" id="lab-${r.id}">Ton avis</span>
+      <div class="seg" role="group" aria-labelledby="lab-${r.id}">
+        <button type="button" data-v="ok" aria-pressed="false">Faisable</button>
+        <button type="button" data-v="test" aria-pressed="false">À tester</button>
+        <button type="button" data-v="no" aria-pressed="false">Non</button>
+      </div>
+      <textarea id="note-${r.id}" rows="1" placeholder="Remarque (optionnel)" aria-label="Remarque sur ${r.name}"></textarea>
+    </div>`;
+  el.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{
+    const cur = state.choices[r.id]||{};
+    const v = cur.v===b.dataset.v ? "" : b.dataset.v;
+    state.choices[r.id] = {...cur, v};
+    render(); persistLocal();
+  }));
+  el.querySelector("textarea").addEventListener("input",e=>{
+    state.choices[r.id] = {...(state.choices[r.id]||{}), note:e.target.value};
+    renderRecap(); persistLocal();
+  });
+  return el;
+}
+
+function renderQty(){
+  const n = Math.max(1, parseInt($("#guests").value,10)||BASE);
+  const f = n/BASE;
+  RECIPES.forEach(r=>{
+    const el = $("#card-"+r.id);
+    el.querySelector(".n-g").textContent = n;
+    el.querySelector(".ing").innerHTML = r.ing.map(([name,q,u])=> q==null ? `<li>${name}</li>` : `<li><span class="qty">${fmtL(q,u,f)}</span> ${name}</li>`).join("");
+  });
+}
+
+const LABEL = {ok:"Faisable", test:"À tester", no:"Non"};
+function recapText(){
+  const lines = ["Choix de Morgane, entrées BymyCar (18.12.2026, "+($("#guests").value||BASE)+" pers.)",""];
+  RECIPES.forEach(r=>{
+    const c = state.choices[r.id]||{};
+    lines.push("- "+r.name+" : "+(c.v?LABEL[c.v]:"pas encore choisi")+(c.note?" ("+c.note.trim()+")":""));
+  });
+  if(state.general.trim()) lines.push("", "Mot pour Malik : "+state.general.trim());
+  return lines.join("\n");
+}
+function renderRecap(){ $("#recap").textContent = recapText(); }
+function render(){
+  let done = 0;
+  RECIPES.forEach(r=>{
+    const c = state.choices[r.id]||{};
+    const el = $("#card-"+r.id);
+    el.classList.remove("ok","test","no"); if(c.v){ el.classList.add(c.v); done++; }
+    el.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===c.v)));
+    const ta = el.querySelector("textarea"); if(document.activeElement!==ta) ta.value = c.note||"";
+  });
+  $("#count").textContent = done+" recette"+(done>1?"s":"")+" sur 5 choisie"+(done>1?"s":"");
+  if(document.activeElement!==$("#general")) $("#general").value = state.general||"";
+  renderRecap();
+}
+function persistLocal(){ try{ localStorage.setItem("bymycar-choix", JSON.stringify(state)); }catch(e){} }
+function loadLocal(){ try{ const s = JSON.parse(localStorage.getItem("bymycar-choix")||"null"); if(s){ Object.assign(state, s); } }catch(e){} }
+
+$("#list-verrines").style.cssText = $("#list-salades").style.cssText = "display:flex;flex-direction:column;gap:16px";
+RECIPES.forEach(r=> (r.group==="verrines"?$("#list-verrines"):$("#list-salades")).appendChild(card(r)));
+loadLocal(); renderQty(); render();
+$("#guests").addEventListener("input", ()=>{ renderQty(); renderRecap(); });
+$("#general").addEventListener("input", e=>{ state.general = e.target.value; renderRecap(); persistLocal(); });
+
+$("#copy").addEventListener("click", async e=>{
+  try{ await navigator.clipboard.writeText(recapText()); $("#status").textContent = "Copié. Tu peux le coller dans un message à Malik."; }
+  catch(err){ const sel = window.getSelection(); const rg = document.createRange(); rg.selectNodeContents($("#recap")); sel.removeAllRanges(); sel.addRange(rg); $("#status").textContent = "Texte sélectionné : copie-le avec ton clavier."; }
+});
+
+$("#send").addEventListener("click", async ()=>{
+  if(saving) return;
+  if(!db){ window.location.href = "https://wa.me/?text=" + encodeURIComponent(recapText()); $("#status").textContent = "WhatsApp s'ouvre : choisis Malik et envoie. Sinon, appuie sur Copier."; return; }
+  saving = true; $("#send").disabled = true; $("#status").textContent = "Envoi…";
+  try{
+    await db.doc("choix/morgane").set({choices: state.choices, general: state.general, guests: Number($("#guests").value)||BASE, recap: recapText(), at: new Date().toISOString()});
+    $("#status").textContent = "Envoyé. Malik voit tes choix.";
+  }catch(err){
+    $("#status").textContent = "L'envoi n'a pas marché. Appuie sur Copier et envoie le texte à Malik.";
+  }finally{ saving = false; $("#send").disabled = false; }
+});
+
+(async ()=>{
+  try{
+    if(!window.claude || !window.claude.use) return;
+    db = await window.claude.use("db");
+    if(!db) return;
+    const snap = await db.doc("choix/morgane").get();
+    const d = snap && (snap.data ? snap.data() : snap);
+    if(d && d.choices && !Object.keys(state.choices).length){
+      state.choices = d.choices; state.general = d.general||"";
+      if(d.guests) $("#guests").value = d.guests;
+      renderQty(); render();
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>

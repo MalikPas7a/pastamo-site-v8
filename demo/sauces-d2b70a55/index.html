@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sauces du mardi 17.11</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="/css/fonts.css">
+<style>
+/* Layout : une colonne de lecture (charte Pasta Mo'), fiches recette repliables, bandeau d'envoi collant en bas. */
+:root{
+  --bg:#FFF1D6; --surface:#FFF8EA; --fg:#0B0908; --muted:#5a4433; --line:rgba(11,9,8,.14);
+  --terra:#C45B3F; --terra-ink:#9e4027; --on-terra:#FFF1D6;
+  --ok:#4f7a2c; --ok-bg:#e6efd6; --test:#9a6a12; --test-bg:#f6e7c4; --no:#8f2f22; --no-bg:#f4d9d2;
+  --display:"Instrument Serif", Georgia, "Times New Roman", serif;
+  --body:"Jost", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0B0908; --surface:#171210; --fg:#FFF1D6; --muted:#c9b59a; --line:rgba(255,241,214,.16);
+  --terra:#d9694b; --terra-ink:#ec8a6c; --on-terra:#0B0908;
+  --ok:#a9cf7a; --ok-bg:#1d2a12; --test:#e8b85a; --test-bg:#2c220e; --no:#f09a8a; --no-bg:#311511; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0B0908; --surface:#171210; --fg:#FFF1D6; --muted:#c9b59a; --line:rgba(255,241,214,.16);
+  --terra:#d9694b; --terra-ink:#ec8a6c; --on-terra:#0B0908;
+  --ok:#a9cf7a; --ok-bg:#1d2a12; --test:#e8b85a; --test-bg:#2c220e; --no:#f09a8a; --no-bg:#311511; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:780px;margin:0 auto;padding-block:28px 150px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0;line-height:1.08}
+h1{font-size:clamp(2.3rem,7vw,3.4rem)} h1 em{color:var(--terra-ink)}
+h2{font-size:clamp(1.7rem,4.5vw,2.2rem)} h3{font-size:1.55rem}
+p{margin:0}
+.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--terra-ink);font-weight:600}
+.intro{display:flex;flex-direction:column;gap:14px}
+.intro p,.sec-head p{max-width:62ch;color:var(--muted)}
+.facts{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.92rem}
+.facts span{white-space:nowrap} .facts b{font-weight:600}
+.howto{border-left:3px solid var(--terra);padding:4px 0 4px 14px;font-size:.95rem;max-width:62ch}
+.scale{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.95rem;align-items:center}
+.scale label{display:flex;gap:8px;align-items:center}
+.scale input{width:5.2em;font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:16px}
+.sec-head{display:flex;flex-direction:column;gap:6px}
+.list{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.card.ok{border-color:var(--ok)} .card.test{border-color:var(--test)} .card.no{opacity:.72}
+.card-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.tag{font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.desc{max-width:62ch}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px 16px;margin:0;padding:12px 0;border-block:1px solid var(--line)}
+.meta div{min-width:0}
+.meta dt{font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.meta dd{margin:2px 0 0;font-weight:500;font-variant-numeric:tabular-nums}
+summary{cursor:pointer;font-weight:600;color:var(--terra-ink);padding:4px 0}
+summary:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+.recipe{display:grid;grid-template-columns:1fr 1.35fr;gap:20px;padding-top:10px}
+@media (max-width:640px){.recipe{grid-template-columns:1fr}}
+.recipe h4{margin:0 0 6px;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.recipe ul,.recipe ol{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:5px}
+.qty{font-variant-numeric:tabular-nums;font-weight:600}
+.lot{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums}
+.when{font-weight:600}
+.note-r{font-size:.9rem;color:var(--muted);margin-top:10px;max-width:62ch}
+.ratios{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ratio{font:inherit;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:6px}
+.ratio[aria-pressed="true"]{border:2px solid var(--terra);padding:15px}
+.ratio .big{font-family:var(--display);font-size:1.7rem;line-height:1}
+.ratio .row{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;font-variant-numeric:tabular-nums}
+.ratio .row span:first-child{color:var(--muted)}
+.ratio .pill{align-self:flex-start;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--ok-bg);color:var(--ok);font-weight:600}
+.choice{display:flex;flex-direction:column;gap:10px}
+.choice-label{font-size:.85rem;font-weight:600}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{font:inherit;font-size:.92rem;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.seg button[aria-pressed="true"][data-v="ok"]{background:var(--ok-bg);border-color:var(--ok);color:var(--ok)}
+.seg button[aria-pressed="true"][data-v="test"]{background:var(--test-bg);border-color:var(--test);color:var(--test)}
+.seg button[aria-pressed="true"][data-v="no"]{background:var(--no-bg);border-color:var(--no);color:var(--no)}
+textarea{font:inherit;font-size:.92rem;width:100%;min-height:2.6em;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);resize:vertical}
+.day{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--terra);margin-left:6px}
+.day div{padding:6px 0 10px 16px;position:relative;max-width:64ch}
+.day div::before{content:"";position:absolute;left:-6px;top:13px;width:10px;height:10px;border-radius:50%;background:var(--terra)}
+.day b{font-variant-numeric:tabular-nums}
+.warn{background:var(--test-bg);color:var(--fg);border-radius:8px;padding:12px 14px;font-size:.93rem;max-width:66ch}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--fg);color:var(--bg);padding-top:12px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));z-index:5}
+.bar-in{max-width:780px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.bar-count{font-size:.92rem}
+.bar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:600;font-size:.95rem;padding:10px 16px;border-radius:8px;border:0;cursor:pointer;background:var(--terra);color:var(--on-terra)}
+.btn.ghost{background:transparent;color:var(--bg);border:1px solid currentColor}
+.btn:disabled{opacity:.5;cursor:default}
+.status{font-size:.85rem;min-height:1.2em}
+.recap{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;white-space:pre-wrap;font-size:.92rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.foot{font-size:.85rem;color:var(--muted);max-width:62ch}
+@media (prefers-reduced-motion:no-preference){.card,.ratio{transition:border-color .2s,opacity .2s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Pasta Mo' · pour Morgane</span>
+    <h1>Les sauces de mardi, <em>on les valide ensemble</em></h1>
+    <p>Mardi 17.11, tu cuisines seule la Bolognaise et la Pomodoro pour la Meyrin Run et la Corrida de Neuchâtel. On repart des recettes du test du 25.10, avec les corrections des testeurs (plus de sel, plus de sauce). Ici tu choisis le taux de viande, tu valides les deux recettes et tu dis quelles touches on ajoute pour que nos sauces aient un goût à nous.</p>
+    <div class="facts">
+      <span>Cuisine <b>mar. 17.11</b></span>
+      <span>Meyrin Run <b>sam. 28.11</b></span>
+      <span>Corrida <b>sam. 05.12</b></span>
+      <span>Louche <b>150 ml</b> par box</span>
+      <span>60 % Bolo · 20 % Pomodoro · 20 % Pesto acheté</span>
+    </div>
+    <p class="howto">Pour chaque recette et chaque idée, choisis <b>Oui</b>, <b>À goûter mardi</b> ou <b>Non</b>, et écris ce que tu changerais. Ensuite, appuie sur <b>Envoyer mes choix</b> en bas. Ce que tu valides ici part ensuite à Roberta, chez Roberto, pour qu'elle nous donne son avis.</p>
+    <div class="scale">
+      <label for="nM">Meyrin <input id="nM" type="number" min="50" max="1000" step="10" value="350" inputmode="numeric"> box</label>
+      <label for="nC">Corrida <input id="nC" type="number" min="50" max="1000" step="10" value="400" inputmode="numeric"> box</label>
+    </div>
+    <p class="foot">Meyrin : 300 box au public et environ 40 pour le comité. Corrida : 400 box (dernier chiffre de Malik, à 300 si on reste prudent). Les quantités se recalculent si tu changes ces chiffres. On compte 10 % de marge.</p>
+  </header>
+
+  <section aria-labelledby="h-viande">
+    <div class="sec-head">
+      <span class="eyebrow">Étape 1</span>
+      <h2 id="h-viande">Le taux de viande de la Bolognaise</h2>
+      <p>Au test, la Bolognaise a eu la note la plus basse pour l'équilibre pâtes et sauce (3,2 sur 5) : beaucoup de grains de viande, pas assez de sauce qui enrobe. Malik a déjà baissé à 1 kg de viande pour 1,5 kg de sauce tomate Roberto. Il se demande si on descend à 1 pour 2. Les autres ingrédients ne changent pas.</p>
+    </div>
+    <div class="ratios" id="ratios" role="group" aria-label="Taux de viande"></div>
+    <p class="note-r" id="ratio-note"></p>
+    <label for="note-ratio" class="choice-label">Ton avis sur le taux de viande</label>
+    <textarea id="note-ratio" rows="2" placeholder="Ex. : 1 pour 1,5, mais je fais une marmite à 1 pour 2 pour comparer"></textarea>
+  </section>
+
+  <section aria-labelledby="h-base">
+    <div class="sec-head">
+      <span class="eyebrow">Étape 2</span>
+      <h2 id="h-base">Les deux recettes de base</h2>
+      <p>La Pomodoro reste celle du test (5 sur 5 pour le goût). La Bolognaise reprend ta version sur base de sauce tomate Roberto, avec trois ajouts de la fiche d'origine pour plus de sauce et plus de goût : concentré de tomate, lait et un peu d'eau.</p>
+    </div>
+    <div class="list" id="list-base"></div>
+  </section>
+
+  <section aria-labelledby="h-touches">
+    <div class="sec-head">
+      <span class="eyebrow">Étape 3</span>
+      <h2 id="h-touches">La touche Pasta Mo'</h2>
+      <p>Des idées pour que nos sauces ne ressemblent à aucune autre. Toutes restent halal (pas de porc, pas de vin) et sans nouvel allergène majeur. Une ou deux touches suffisent : si on met tout, on ne reconnaît plus rien. Pour goûter mardi, prends 3 louches de sauce de base dans un petit pot et ajoute la touche à petite dose.</p>
+    </div>
+    <div class="list" id="list-touches"></div>
+  </section>
+
+  <section aria-labelledby="h-jour">
+    <div class="sec-head">
+      <span class="eyebrow">Mardi 17.11</span>
+      <h2 id="h-jour">Le déroulé de la journée</h2>
+      <p id="jour-intro"></p>
+    </div>
+    <div class="day">
+      <div><b>7 h 30</b> · Réception de la viande et des légumes déjà coupés chez Roberto. Contrôler la température de la viande (moins de 5 °C) et la noter.</div>
+      <div><b>8 h</b> · Pomodoro en premier (environ 1 h 15 par marmite) : elle est simple et libère le feu. Pendant qu'elle mijote, faire suer les légumes de la Bolognaise.</div>
+      <div><b>9 h</b> · Bolognaise : colorer la viande par 2 à 3 kg à la fois, puis tout réunir dans les grandes marmites avec les légumes. Mijoter 1 h 30 à 2 h.</div>
+      <div><b>Pendant la cuisson</b> · Goûter les touches à petite dose, choisir, puis les ajouter aux marmites.</div>
+      <div><b>Fin de cuisson</b> · Goûter, saler, noter la température (75 °C au moins) et peser chaque marmite.</div>
+      <div><b>Refroidir</b> · Bacs gastro de 5 cm au plus, dans l'eau glacée : moins de 10 °C en 2 h. Puis sachets sous vide de 2,5 kg (environ 16 box), étiquetés : sauce, événement, date. Tout au congélateur, à -18 °C.</div>
+      <div><b>Décongélation</b> · Au frigo : sauce de Meyrin dès le jeudi 26.11 au matin, sauce de la Corrida dès le jeudi 03.12. Réchauffer à 75 °C au moins le jour J.</div>
+    </div>
+    <p class="warn">Une sauce cuite le 17.11 ne tient pas au frigo jusqu'au 28.11 (4 jours au plus). Il faut donc tout congeler le jour même, et il faut savoir où. Questions pour toi : combien de grandes marmites et de feux chez Roberto ? Une cellule de refroidissement et une machine sous vide ? Un congélateur assez grand pour environ 100 kg ? Tu veux de l'aide pour la journée ?</p>
+    <label for="note-jour" class="choice-label">Ce qu'il te faut pour mardi (matériel, aide, horaires)</label>
+    <textarea id="note-jour" rows="2" placeholder="Ex. : il faut 2 marmites de 50 L et quelqu'un de 9 h à 13 h"></textarea>
+  </section>
+
+  <section aria-labelledby="h-recap">
+    <div class="sec-head">
+      <span class="eyebrow">Récapitulatif</span>
+      <h2 id="h-recap">Tes choix</h2>
+    </div>
+    <div class="recap" id="recap" aria-live="polite"></div>
+    <label for="general" class="choice-label">Un mot pour Malik (autre idée, ce qui t'inquiète)</label>
+    <textarea id="general" rows="3" placeholder="Ex. : je préfère faire la Pomodoro le vendredi avant chaque course"></textarea>
+    <p class="foot">Rendements mesurés au test : 78 % pour la Bolognaise, 76 % pour la Pomodoro. Les coûts sont des estimations : bœuf halal à 17.90 CHF/kg, sauce tomate Roberto à 8.50 CHF/kg (offre du 07.10), légumes aux prix UMG, le reste au prix du marché. Pèse chaque marmite crue et cuite mardi : on corrigera les chiffres avec tes pesées.</p>
+  </section>
+</div>
+
+<div class="bar" role="region" aria-label="Envoi des choix">
+  <div class="bar-in">
+    <div>
+      <div class="bar-count" id="count"></div>
+      <div class="status" id="status" aria-live="polite"></div>
+    </div>
+    <div class="bar-actions">
+      <button class="btn ghost" id="copy" type="button">Copier</button>
+      <button class="btn" id="send" type="button">Envoyer mes choix</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const S = 0.15, MARGE = 1.10, MIX_B = 0.6, MIX_P = 0.2, Y_B = 0.78, Y_P = 0.76;
+/* Bolognaise : quantités pour 1 kg de viande ; la sauce tomate dépend du ratio choisi. */
+const BOLO_FIX = [["huile d'olive",50,"g"],["oignons (émincés)",300,"g"],["carottes (brunoise)",200,"g"],["céleri (brunoise)",150,"g"],["ail (pulpe ou haché)",15,"g"],["concentré de tomate",40,"g"],["lait entier",150,"ml"],["eau",100,"ml"],["sel au départ (jusqu'à 18 g en goûtant)",12,"g"],["poivre noir moulu",2,"g"],["noix de muscade",0.5,"g"],["laurier",2,"feuilles"]];
+const BOLO_FIX_G = 2007-1000; /* poids des ingrédients fixes, viande à part */
+const POMO = [["passata Mutti",800,"g"],["pulpe Cirio",200,"g"],["huile d'olive",15,"g"],["oignon (émincé fin)",65,"g"],["ail",15,"g"],["basilic frais",8,"g"],["sel (à goûter)",10,"g"]];
+const POMO_RAW = 1113;
+const RATIOS = [
+  {r:1, label:"1 pour 1", sub:"comme au test du 25.10"},
+  {r:1.5, label:"1 pour 1,5", sub:"choix actuel de Malik", reco:true},
+  {r:2, label:"1 pour 2", sub:"plus de sauce, moins de viande"}
+];
+const TOUCHES = [
+  {id:"t-herbes", sauce:"Bolognaise", name:"Herbes de Provence de Tunisie", dose:"3 g par kg de viande, à mi-cuisson", effet:"Thym, romarin et sarriette très parfumés. Ça donne une odeur de garrigue à la Bolognaise et ça raconte quelque chose (les herbes de Malik).", risque:"Faible. Ne pas dépasser la dose, sinon ça devient un goût de pizza.", cout:"moins de 0.01 CHF / box"},
+  {id:"t-parmesan", sauce:"Bolognaise", name:"Croûte de parmesan qui mijote", dose:"50 g de croûtes par kg de viande, retirées à la fin", effet:"Le truc des grand-mères italiennes : beaucoup plus de goût de fond (umami), sans qu'on sache pourquoi.", risque:"Lait (déjà présent avec le lait). Demander des croûtes au fromager, souvent données ou très bon marché.", cout:"≈ 0.03 CHF / box"},
+  {id:"t-harissa", sauce:"Bolognaise", name:"Pointe de harissa et de cumin", dose:"8 g de harissa et 1 g de cumin par kg de viande", effet:"Une chaleur douce, pas du piquant. La Bolognaise devient italo-tunisienne : c'est la plus « signature » des idées, et ça se raconte bien sur Instagram.", risque:"Moyen : plaît beaucoup ou divise. Les enfants. À goûter absolument avant de l'ajouter à tout.", cout:"≈ 0.02 CHF / box"},
+  {id:"t-paprika", sauce:"Bolognaise", name:"Paprika fumé", dose:"3 g par kg de viande, avec le concentré", effet:"Un goût un peu grillé, comme une viande cuite au feu de bois. Plaît aux sportifs.", risque:"Faible. Ne pas cumuler avec la harissa.", cout:"≈ 0.01 CHF / box"},
+  {id:"t-ailconfit", sauce:"Pomodoro", name:"Ail confit au lieu de l'ail cru", dose:"même poids d'ail, confit 40 min dans l'huile à feu très doux", effet:"L'ail devient doux et sucré, la Pomodoro plus ronde. Et on garde l'huile parfumée pour la finition. C'était dans la fiche d'origine.", risque:"Faible. 40 min de plus, mais on peut le faire pendant que la Bolognaise mijote.", cout:"≈ 0.02 CHF / box"},
+  {id:"t-huile", sauce:"Pomodoro", name:"Filet d'huile d'olive crue et basilic au service", dose:"5 ml d'huile et 2 feuilles de basilic par box, au moment de fermer", effet:"Le parfum le plus fort pour le moins d'effort : la box sent le basilic à l'ouverture.", risque:"Aucun en cuisine. Une bouteille à bec verseur et un bac de basilic au stand.", cout:"≈ 0.15 CHF / box"},
+  {id:"t-piment", sauce:"Les deux", name:"Huile pimentée maison, sur demande", dose:"1 L d'huile d'olive, 15 g de piment séché, chauffés 10 min, en bouteille", effet:"Une option « piccante » au comptoir, gratuite ou à 0.50 CHF. Ceux qui aiment le piquant reviennent.", risque:"Aucun pour la recette : c'est à part.", cout:"≈ 0.05 CHF / box servie"},
+  {id:"t-pangrattato", sauce:"Les deux", name:"Pangrattato : chapelure dorée ail-citron", dose:"8 g par box, sur le dessus", effet:"Du croquant sur des pâtes molles, c'est ce qui manque le plus en street food. Pain sec mixé, doré à l'huile avec ail, zeste de citron et herbes.", risque:"Gluten (déjà dans les pâtes). Se fait mardi et se garde 2 semaines en boîte fermée.", cout:"≈ 0.06 CHF / box"}
+];
+const BASES = [
+  {id:"bolo", name:"Bolognaise de Morgane", tag:"Base sauce tomate Roberto · halal",
+   desc:"Ta Bolognaise du test, avec la sauce tomate Roberto, plus un peu de concentré, de lait et d'eau pour qu'elle enrobe les pâtes. Salée dès le départ.",
+   steps:[["Légumes","Faire suer oignons, carottes, céleri et ail dans l'huile, 15 min à feu moyen, sans colorer."],["Viande","Colorer la viande à feu vif par 2 à 3 kg à la fois, sans remuer les 3 premières minutes, puis l'émietter fin. Si on met tout d'un coup, elle bout et devient grise."],["Concentré","Ajouter le concentré avec la viande et le faire « pincer » 2 min en remuant."],["Lait","Verser le lait et laisser réduire 5 min. Il rend la viande tendre."],["Mijoter","Ajouter la sauce tomate Roberto, l'eau, le laurier, le sel de départ, le poivre et la muscade. 1 h 30 à 2 h à feu doux, couvercle entrouvert, remuer toutes les 15 min."],["Goûter","Ajouter les touches choisies. Saler jusqu'au bon goût (c'était le reproche n° 1 au test). Retirer le laurier."],["Texture","La sauce doit napper la cuillère et rester un peu liquide : on doit voir plus de sauce que de grains. Trop épaisse, un peu d'eau."]],
+   tip:"La sauce tomate Roberto est déjà assaisonnée : goûter avant d'ajouter tout le sel."},
+  {id:"pomo", name:"Pomodoro du test", tag:"Végétarienne · validée au test",
+   desc:"La recette du 25.10, la mieux notée (5 sur 5 pour le goût, 4,7 pour l'envie d'en reprendre). Proportions reprises des notes du test : 1 200 g de passata pour 300 g de pulpe.",
+   steps:[["Base","Oignon émincé fin et ail dans l'huile, 8 à 10 min à feu doux, sans colorer."],["Tomates","Ajouter la passata et la pulpe, saler un peu. Mijoter 45 min à feu doux, en remuant."],["Fin","Ajouter le basilic déchiré hors du feu. Goûter et ajuster le sel."]],
+   tip:"À confirmer par toi : au test, la fiche dit 1 800 g de tomates et les notes 1 500 g. On a pris les notes."}
+];
+
+const $ = s => document.querySelector(s);
+const state = {ratio:1.5, choices:{}, notes:{}, general:""};
+let db = null, saving = false;
+
+function boxes(){ return {m:Math.max(0,parseInt($("#nM").value,10)||0), c:Math.max(0,parseInt($("#nC").value,10)||0)}; }
+function nb(v,d=1){ return (Math.round(v*Math.pow(10,d))/Math.pow(10,d)).toString().replace(".",","); }
+function fmtQ(g,unit){
+  if(unit==="feuilles") return Math.ceil(g)+" feuilles";
+  if(unit==="ml") return g>=1000 ? nb(g/1000)+" L" : Math.round(g)+" ml";
+  return g>=1000 ? nb(g/1000)+" kg" : (g<10? nb(g):Math.round(g))+" g";
+}
+function calc(r){
+  const b = boxes(), tot = b.m+b.c;
+  const boloCuit = tot*MIX_B*S*MARGE, pomoCuit = tot*MIX_P*S*MARGE;
+  const lotCuit = (1000+1000*r+BOLO_FIX_G)*Y_B/1000;
+  const viande = boloCuit/lotCuit;
+  const boxLot = lotCuit/S;
+  const cout = (17.9+8.5*r+3.3)/boxLot;
+  const tom = pomoCuit/(POMO_RAW*Y_P/1000);
+  return {b, tot, boloCuit, pomoCuit, viande, sauceR:viande*r, boxLot, gBox:1000/boxLot, cout, pct:1000/(2007+1000*r)*100, tom};
+}
+
+function renderRatios(){
+  const el = $("#ratios"); el.innerHTML = "";
+  RATIOS.forEach(o=>{
+    const k = calc(o.r);
+    const b = document.createElement("button");
+    b.type="button"; b.className="ratio"; b.setAttribute("aria-pressed", String(state.ratio===o.r));
+    b.innerHTML = `${o.reco?'<span class="pill">Conseillé</span>':''}<span class="big">${o.label}</span><span class="tag">${o.sub}</span>
+      <span class="row"><span>Viande crue par box</span><b>${Math.round(k.gBox)} g</b></span>
+      <span class="row"><span>Viande dans le cru</span><b>${Math.round(k.pct)} %</b></span>
+      <span class="row"><span>Viande à commander</span><b>${nb(k.viande)} kg</b></span>
+      <span class="row"><span>Sauce tomate Roberto</span><b>${nb(k.sauceR)} kg</b></span>
+      <span class="row"><span>Coût de la sauce</span><b>${k.cout.toFixed(2)} CHF / box</b></span>`;
+    b.addEventListener("click",()=>{ state.ratio=o.r; renderAll(); persistLocal(); });
+    el.appendChild(b);
+  });
+  $("#ratio-note").textContent = "Le coût par box bouge à peine (la sauce tomate Roberto coûte presque la moitié du prix du bœuf). Le taux de viande se choisit donc au goût et à la texture, pas pour économiser. Conseil : 1 pour 1,5, avec 55 g de viande par box, c'est encore généreux pour des coureurs. Si tu veux comparer, fais une petite marmite à 1 pour 2 et on le garde pour le 2e test.";
+}
+
+function card(r, kind){
+  const el = document.createElement("article");
+  el.className="card"; el.id="card-"+r.id;
+  const head = kind==="base"
+    ? `<div class="card-top"><h3>${r.name}</h3><span class="tag">${r.tag}</span></div><p class="desc">${r.desc}</p><dl class="meta" id="meta-${r.id}"></dl>
+       <details><summary>Voir la recette et les quantités pour mardi</summary><div class="recipe"><div><h4>Ingrédients (total mardi)</h4><ul id="ing-${r.id}"></ul></div><div><h4>Étapes</h4><ol>${r.steps.map(([w,t])=>`<li><span class="when">${w} :</span> ${t}</li>`).join("")}</ol></div></div><p class="note-r">${r.tip}</p></details>`
+    : `<div class="card-top"><h3>${r.name}</h3><span class="tag">${r.sauce}</span></div><p class="desc">${r.effet}</p>
+       <dl class="meta"><div><dt>Dose</dt><dd>${r.dose}</dd></div><div><dt>Risque</dt><dd>${r.risque}</dd></div><div><dt>Coût</dt><dd>${r.cout}</dd></div></dl>`;
+  const labels = kind==="base" ? ["Je valide","À changer","Non"] : ["Oui","À goûter mardi","Non"];
+  el.innerHTML = head + `<div class="choice"><span class="choice-label" id="lab-${r.id}">Ton avis</span>
+    <div class="seg" role="group" aria-labelledby="lab-${r.id}">
+      <button type="button" data-v="ok" aria-pressed="false">${labels[0]}</button>
+      <button type="button" data-v="test" aria-pressed="false">${labels[1]}</button>
+      <button type="button" data-v="no" aria-pressed="false">${labels[2]}</button></div>
+    <textarea id="note-${r.id}" rows="1" placeholder="${kind==="base"?"Ce que tu changes (dose, étape, ingrédient)":"Remarque (optionnel)"}" aria-label="Remarque sur ${r.name}"></textarea></div>`;
+  el._labels = labels;
+  el.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{
+    const cur = state.choices[r.id]||"";
+    state.choices[r.id] = cur===b.dataset.v ? "" : b.dataset.v;
+    renderChoices(); persistLocal();
+  }));
+  el.querySelector("textarea").addEventListener("input",e=>{ state.notes[r.id]=e.target.value; renderRecap(); persistLocal(); });
+  return el;
+}
+
+function renderQty(){
+  const k = calc(state.ratio), b = k.b;
+  const L = k.viande;
+  $("#ing-bolo").innerHTML = [["bœuf haché halal",1000,"g"],["sauce tomate Roberto",1000*state.ratio,"g"],...BOLO_FIX]
+    .map(([n,q,u])=>`<li><span class="qty">${fmtQ(q*L,u)}</span> ${n} <span class="lot">(${fmtQ(q,u)} par kg de viande)</span></li>`).join("");
+  $("#meta-bolo").innerHTML = `<div><dt>Sauce cuite</dt><dd>${nb(k.boloCuit)} kg</dd></div><div><dt>Box</dt><dd>${Math.round((b.m+b.c)*MIX_B)} + 10 %</dd></div><div><dt>Dont Meyrin</dt><dd>${nb(b.m*MIX_B*S*MARGE)} kg</dd></div><div><dt>Dont Corrida</dt><dd>${nb(b.c*MIX_B*S*MARGE)} kg</dd></div><div><dt>Par kg de viande</dt><dd>≈ ${Math.round(k.boxLot)} box</dd></div>`;
+  $("#ing-pomo").innerHTML = POMO.map(([n,q,u])=>`<li><span class="qty">${fmtQ(q*k.tom,u)}</span> ${n} <span class="lot">(${fmtQ(q,u)} par kg de tomates)</span></li>`).join("");
+  $("#meta-pomo").innerHTML = `<div><dt>Sauce cuite</dt><dd>${nb(k.pomoCuit)} kg</dd></div><div><dt>Box</dt><dd>${Math.round((b.m+b.c)*MIX_P)} + 10 %</dd></div><div><dt>Dont Meyrin</dt><dd>${nb(b.m*MIX_P*S*MARGE)} kg</dd></div><div><dt>Dont Corrida</dt><dd>${nb(b.c*MIX_P*S*MARGE)} kg</dd></div><div><dt>Par kg de tomates</dt><dd>≈ ${nb(1000*POMO_RAW/1000*Y_P/1000/S)} box</dd></div>`;
+  $("#jour-intro").textContent = `Environ ${Math.round(k.boloCuit+k.pomoCuit)} kg de sauce cuite au total : ${nb(k.boloCuit,0)} kg de Bolognaise et ${nb(k.pomoCuit,0)} kg de Pomodoro. C'est une grosse journée pour une personne seule, compte 9 à 11 heures avec le refroidissement.`;
+}
+
+const ALL = () => [...BASES.map(r=>[r,"base"]), ...TOUCHES.map(r=>[r,"touche"])];
+function renderChoices(){
+  let done=0;
+  ALL().forEach(([r])=>{
+    const v = state.choices[r.id]||"", el = $("#card-"+r.id);
+    el.classList.remove("ok","test","no"); if(v){ el.classList.add(v); done++; }
+    el.querySelectorAll(".seg button").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.v===v)));
+    const ta = el.querySelector("textarea"); if(document.activeElement!==ta) ta.value = state.notes[r.id]||"";
+  });
+  const n = ALL().length;
+  $("#count").textContent = done+" sur "+n+" répondu"+(done>1?"s":"");
+  ["ratio","jour"].forEach(k=>{ const ta=$("#note-"+k); if(document.activeElement!==ta) ta.value = state.notes[k]||""; });
+  if(document.activeElement!==$("#general")) $("#general").value = state.general||"";
+  renderRecap();
+}
+function recapText(){
+  const k = calc(state.ratio), lab = RATIOS.find(o=>o.r===state.ratio).label;
+  const L = ["Choix de Morgane, sauces du mardi 17.11 (Meyrin "+k.b.m+" box, Corrida "+k.b.c+" box)", "",
+    "Taux de viande : "+lab+" → "+nb(k.viande)+" kg de viande, "+nb(k.sauceR)+" kg de sauce tomate Roberto"+(state.notes.ratio?" ("+state.notes.ratio.trim()+")":""), ""];
+  ALL().forEach(([r,kind])=>{
+    const v = state.choices[r.id]||"", el=$("#card-"+r.id);
+    const t = v ? el._labels[{ok:0,test:1,no:2}[v]] : "pas encore répondu";
+    L.push("- "+r.name+" : "+t+(state.notes[r.id]?" ("+state.notes[r.id].trim()+")":""));
+  });
+  if((state.notes.jour||"").trim()) L.push("", "Pour mardi : "+state.notes.jour.trim());
+  if(state.general.trim()) L.push("", "Mot pour Malik : "+state.general.trim());
+  return L.join("\n");
+}
+function renderRecap(){ $("#recap").textContent = recapText(); }
+function renderAll(){ renderRatios(); renderQty(); renderChoices(); }
+function persistLocal(){ try{ localStorage.setItem("sauces-1711", JSON.stringify(state)); }catch(e){} }
+function loadLocal(){ try{ const s=JSON.parse(localStorage.getItem("sauces-1711")||"null"); if(s) Object.assign(state,s); }catch(e){} }
+
+BASES.forEach(r=>$("#list-base").appendChild(card(r,"base")));
+TOUCHES.forEach(r=>$("#list-touches").appendChild(card(r,"touche")));
+loadLocal(); renderAll();
+["#nM","#nC"].forEach(s=>$(s).addEventListener("input",()=>{ renderRatios(); renderQty(); renderRecap(); }));
+["ratio","jour"].forEach(k=>$("#note-"+k).addEventListener("input",e=>{ state.notes[k]=e.target.value; renderRecap(); persistLocal(); }));
+$("#general").addEventListener("input",e=>{ state.general=e.target.value; renderRecap(); persistLocal(); });
+
+$("#copy").addEventListener("click", async ()=>{
+  try{ await navigator.clipboard.writeText(recapText()); $("#status").textContent="Copié. Tu peux le coller dans un message à Malik."; }
+  catch(err){ const sel=window.getSelection(), rg=document.createRange(); rg.selectNodeContents($("#recap")); sel.removeAllRanges(); sel.addRange(rg); $("#status").textContent="Texte sélectionné : copie-le avec ton clavier."; }
+});
+$("#send").addEventListener("click", async ()=>{
+  if(saving) return;
+  if(!db){ window.location.href = "https://wa.me/?text=" + encodeURIComponent(recapText()); $("#status").textContent = "WhatsApp s'ouvre : choisis Malik et envoie. Sinon, appuie sur Copier."; return; }
+  saving=true; $("#send").disabled=true; $("#status").textContent="Envoi…";
+  try{
+    const b = boxes();
+    await db.doc("choix/morgane").set({ratio:state.ratio, choices:state.choices, notes:state.notes, general:state.general, meyrin:b.m, corrida:b.c, recap:recapText(), at:new Date().toISOString()});
+    $("#status").textContent="Envoyé. Malik voit tes choix.";
+  }catch(err){ $("#status").textContent="L'envoi n'a pas marché. Appuie sur Copier et envoie le texte à Malik."; }
+  finally{ saving=false; $("#send").disabled=false; }
+});
+(async ()=>{
+  try{
+    if(!window.claude || !window.claude.use) return;
+    db = await window.claude.use("db");
+    if(!db) return;
+    const snap = await db.doc("choix/morgane").get();
+    const d = snap && (snap.data ? snap.data() : snap);
+    if(d && d.choices && !Object.keys(state.choices).length){
+      state.ratio=d.ratio||1.5; state.choices=d.choices; state.notes=d.notes||{}; state.general=d.general||"";
+      if(d.meyrin) $("#nM").value=d.meyrin; if(d.corrida) $("#nC").value=d.corrida;
+      renderAll();
+    }
+  }catch(e){}
+})();
+</script>
+
+</body>
+</html>
