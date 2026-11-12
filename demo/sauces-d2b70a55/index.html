@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Sauces du mardi 17.11</title>
+<title>Sauces du mardi 24.11</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="/css/fonts.css">
 <style>
@@ -100,9 +100,9 @@ textarea{font:inherit;font-size:.92rem;width:100%;min-height:2.6em;padding:8px 1
   <header class="intro">
     <span class="eyebrow">Pasta Mo' · pour Morgane</span>
     <h1>Les sauces de mardi, <em>on les valide ensemble</em></h1>
-    <p>Mardi 17.11, tu cuisines seule la Bolognaise et la Pomodoro pour la Meyrin Run et la Corrida de Neuchâtel. On repart des recettes du test du 25.10, avec les corrections des testeurs (plus de sel, plus de sauce). Ici tu choisis le taux de viande, tu valides les deux recettes et tu dis quelles touches on ajoute pour que nos sauces aient un goût à nous.</p>
+    <p>Mardi 24.11, tu cuisines seule la Bolognaise et la Pomodoro pour la Meyrin Run et la Corrida de Neuchâtel. On repart des recettes du test du 25.10, avec les corrections des testeurs (plus de sel, plus de sauce). Ici tu choisis le taux de viande, tu valides les deux recettes et tu dis quelles touches on ajoute pour que nos sauces aient un goût à nous.</p>
     <div class="facts">
-      <span>Cuisine <b>mar. 17.11</b></span>
+      <span>Cuisine <b>mar. 24.11</b></span>
       <span>Meyrin Run <b>sam. 28.11</b></span>
       <span>Corrida <b>sam. 05.12</b></span>
       <span>Louche <b>150 ml</b> par box</span>
@@ -148,7 +148,7 @@ textarea{font:inherit;font-size:.92rem;width:100%;min-height:2.6em;padding:8px 1
 
   <section aria-labelledby="h-jour">
     <div class="sec-head">
-      <span class="eyebrow">Mardi 17.11</span>
+      <span class="eyebrow">Mardi 24.11</span>
       <h2 id="h-jour">Le déroulé de la journée</h2>
       <p id="jour-intro"></p>
     </div>
@@ -158,10 +158,10 @@ textarea{font:inherit;font-size:.92rem;width:100%;min-height:2.6em;padding:8px 1
       <div><b>9 h</b> · Bolognaise : colorer la viande par 2 à 3 kg à la fois, puis tout réunir dans les grandes marmites avec les légumes. Mijoter 1 h 30 à 2 h.</div>
       <div><b>Pendant la cuisson</b> · Goûter les touches à petite dose, choisir, puis les ajouter aux marmites.</div>
       <div><b>Fin de cuisson</b> · Goûter, saler, noter la température (75 °C au moins) et peser chaque marmite.</div>
-      <div><b>Refroidir</b> · Bacs gastro de 5 cm au plus, dans l'eau glacée : moins de 10 °C en 2 h. Puis sachets sous vide de 2,5 kg (environ 16 box), étiquetés : sauce, événement, date. Tout au congélateur, à -18 °C.</div>
-      <div><b>Décongélation</b> · Au frigo : sauce de Meyrin dès le jeudi 26.11 au matin, sauce de la Corrida dès le jeudi 03.12. Réchauffer à 75 °C au moins le jour J.</div>
+      <div><b>Refroidir</b> · Bacs gastro de 5 cm au plus, dans l'eau glacée : moins de 10 °C en 2 h. Puis sachets sous vide de 2,5 kg (environ 16 box), étiquetés : sauce, événement, date. Meyrin au frigo (0 à 3 °C), Corrida au congélateur (-18 °C).</div>
+      <div><b>Après</b> · Sauce de Meyrin : 4 jours au frigo, réchauffée à 75 °C au moins le samedi 28.11. Sauce de la Corrida : décongélation au frigo dès le jeudi 03.12, réchauffée à 75 °C au moins le 05.12.</div>
     </div>
-    <p class="warn">Une sauce cuite le 17.11 ne tient pas au frigo jusqu'au 28.11 (4 jours au plus). Il faut donc tout congeler le jour même, et il faut savoir où. Questions pour toi : combien de grandes marmites et de feux chez Roberto ? Une cellule de refroidissement et une machine sous vide ? Un congélateur assez grand pour environ 100 kg ? Tu veux de l'aide pour la journée ?</p>
+    <p class="warn">La part de Meyrin tient au frigo jusqu'au samedi (4 jours, refroidie vite et sous vide). La part de la Corrida (11 jours) se congèle le jour même, sauf si Roberto écrit sur les sachets une date limite qui va jusqu'au 05.12. Questions pour toi : combien de grandes marmites et de feux chez Roberto ? Une cellule de refroidissement et une machine sous vide ? Un congélateur assez grand pour environ 55 kg ? Tu veux de l'aide pour la journée ?</p>
     <label for="note-jour" class="choice-label">Ce qu'il te faut pour mardi (matériel, aide, horaires)</label>
     <textarea id="note-jour" rows="2" placeholder="Ex. : il faut 2 marmites de 50 L et quelqu'un de 9 h à 13 h"></textarea>
   </section>
@@ -317,7 +317,7 @@ function renderChoices(){
 }
 function recapText(){
   const k = calc(state.ratio), lab = RATIOS.find(o=>o.r===state.ratio).label;
-  const L = ["Choix de Morgane, sauces du mardi 17.11 (Meyrin "+k.b.m+" box, Corrida "+k.b.c+" box)", "",
+  const L = ["Choix de Morgane, sauces du mardi 24.11 (Meyrin "+k.b.m+" box, Corrida "+k.b.c+" box)", "",
     "Taux de viande : "+lab+" → "+nb(k.viande)+" kg de viande, "+nb(k.sauceR)+" kg de sauce tomate Roberto"+(state.notes.ratio?" ("+state.notes.ratio.trim()+")":""), ""];
   ALL().forEach(([r,kind])=>{
     const v = state.choices[r.id]||"", el=$("#card-"+r.id);
