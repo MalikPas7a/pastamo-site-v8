@@ -60,6 +60,8 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .tiers button{font:inherit;font-size:.82rem;font-weight:500;padding:9px 6px;border-radius:12px;border:1px solid var(--line);
   background:transparent;color:var(--muted);cursor:pointer;transition:.2s}
+.salle{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:.9rem;color:var(--muted);cursor:pointer}
+.salle input{width:18px;height:18px;accent-color:var(--terra)}
 .tiers button.on{background:var(--brun);border-color:var(--brun);color:var(--creme)}
 
 /* FORMULES */
@@ -201,6 +203,7 @@ td.hl{background:rgba(196,91,63,.1);color:var(--terra);font-weight:700}
         <div class="guests"><output id="n">80</output><span>convives</span></div>
       </div>
       <input type="range" id="slider" min="20" max="400" step="10" value="80" aria-label="Nombre de convives">
+      <label class="salle"><input type="checkbox" id="salle"> En salle, sans stand (tables et prises sur place)</label>
       <div class="tiers" role="group" aria-label="Paliers">
         <button data-v="40">20 – 50</button>
         <button data-v="80">51 – 100</button>
@@ -303,10 +306,11 @@ td.hl{background:rgba(196,91,63,.1);color:var(--terra);font-weight:700}
       <div class="box">
         <h3>Stand &amp; service</h3>
         <div class="row"><span>Stand Pasta Mo' (tente, néon, comptoir, matériel, installation, transport dans le canton de Genève)</span><b>CHF 450</b></div>
+        <div class="row"><span>En salle, sans stand (sur vos tables, avec vos prises)</span><b>CHF 150</b></div>
         <div class="row"><span>Service par notre équipe</span><b>3 h incluses</b></div>
         <div class="row"><span>Heure supplémentaire, par membre de l'équipe</span><b>CHF 55</b></div>
         <div class="row"><span>Hors canton de Genève</span><b>Sur devis</b></div>
-        <span class="free">Stand offert dès 100 convives</span>
+        <span class="free">Stand ou déplacement offert dès 100 convives</span>
       </div>
     </div>
   </section>
@@ -355,10 +359,12 @@ td.hl{background:rgba(196,91,63,.1);color:var(--terra);font-weight:700}
 <script>
 const P=[[32,26,22,18],[40,32,28,24],[52,44,38,32]];
 const NAMES=["L'Assiette","Assiette & Douceurs","Formule complète"];
-const STAND=450;
+const STAND=450,SALLE=150;
+const salle=document.getElementById("salle");
+const fee=()=>salle.checked?SALLE:STAND;
 const tier=n=>n<=50?0:n<=100?1:n<=200?2:3;
 const fmt=v=>"CHF "+v.toLocaleString("fr-CH");
-const raw=(f,m)=>P[f][tier(m)]*m+(m<100?STAND:0);
+const raw=(f,m)=>P[f][tier(m)]*m+(m<100?fee():0);
 /* On ne paie jamais plus qu'au palier suivant : on garde le total le plus bas. */
 const best=(f,n)=>[n,51,100,101,201].filter(m=>m>=n).reduce((b,m)=>{const v=raw(f,m);return v<b.v?{v,m}:b},{v:Infinity,m:n});
 const slider=document.getElementById("slider"),out=document.getElementById("n");
@@ -374,11 +380,16 @@ function update(){
   document.querySelectorAll(".tiers button").forEach((b,i)=>b.classList.toggle("on",i===t));
   tb.querySelectorAll("tr").forEach(tr=>tr.querySelectorAll("td").forEach((td,j)=>td.classList.toggle("hl",j===t+1)));
   document.getElementById("standNote").innerHTML=withStand
-    ?"Total estimé avec le forfait stand de CHF 450. <b>Dès 100 convives, le stand est offert.</b>"
-    :"<b>Stand offert</b> pour votre événement : il est inclus dès 100 convives.";
+    ?(salle.checked
+      ?"Total estimé en salle, sans stand, avec CHF 150 de déplacement. <b>Offert dès 100 convives.</b>"
+      :"Total estimé avec le forfait stand de CHF 450. <b>Dès 100 convives, le stand est offert.</b>")
+    :(salle.checked
+      ?"<b>Déplacement offert</b> pour votre événement en salle : il est inclus dès 100 convives."
+      :"<b>Stand offert</b> pour votre événement : il est inclus dès 100 convives.");
   if(applied) document.getElementById("standNote").innerHTML+="<br>Vous ne payez jamais plus qu'au palier suivant : le total affiché tient compte de ce plafond.";
 }
 slider.addEventListener("input",update);
+salle.addEventListener("change",update);
 document.querySelectorAll(".tiers button").forEach(b=>b.addEventListener("click",()=>{slider.value=b.dataset.v;update()}));
 update();
 </script>
