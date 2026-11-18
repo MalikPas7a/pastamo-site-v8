@@ -137,7 +137,7 @@ td.hl{background:rgba(196,91,63,.1);color:var(--terra);font-weight:700}
 .soon p{margin-top:10px;max-width:58ch;color:rgba(255,241,214,.88);position:relative;z-index:1}
 
 /* CONDITIONS */
-.conds{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.conds{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 .cond{border-top:2px solid var(--terra);padding-top:14px}
 .cond b{display:block;font-family:var(--serif);font-size:1.25rem}
 .cond span{font-size:.88rem;color:var(--muted)}
@@ -335,6 +335,7 @@ td.hl{background:rgba(196,91,63,.1);color:var(--terra);font-weight:700}
         <div class="cond"><b>30 %</b><span>d'acompte à la confirmation</span></div>
         <div class="cond"><b>J – 7</b><span>nombre de convives définitif</span></div>
         <div class="cond"><b>2027</b><span>prix nets en CHF, valables toute l'année</span></div>
+        <div class="cond"><b>Palier suivant</b><span>vous ne payez jamais plus qu'au palier suivant</span></div>
       </div>
     </div>
   </section>
@@ -357,6 +358,9 @@ const NAMES=["L'Assiette","Assiette & Douceurs","Formule complète"];
 const STAND=450;
 const tier=n=>n<=50?0:n<=100?1:n<=200?2:3;
 const fmt=v=>"CHF "+v.toLocaleString("fr-CH");
+const raw=(f,m)=>P[f][tier(m)]*m+(m<100?STAND:0);
+/* On ne paie jamais plus qu'au palier suivant : on garde le total le plus bas. */
+const best=(f,n)=>[n,51,100,101,201].filter(m=>m>=n).reduce((b,m)=>{const v=raw(f,m);return v<b.v?{v,m}:b},{v:Infinity,m:n});
 const slider=document.getElementById("slider"),out=document.getElementById("n");
 const tb=document.getElementById("tbody");
 tb.innerHTML=P.map((r,i)=>`<tr><td>${NAMES[i]}</td>${r.map(v=>`<td>CHF ${v}</td>`).join("")}</tr>`).join("");
@@ -365,12 +369,14 @@ function update(){
   out.textContent=slider.value==slider.max?n+"+":n;
   slider.style.setProperty("--p",((n-slider.min)/(slider.max-slider.min)*100)+"%");
   document.querySelectorAll("[data-f]").forEach(el=>{el.textContent=P[+el.dataset.f][t]});
-  document.querySelectorAll("[data-t]").forEach(el=>{el.textContent=fmt(P[+el.dataset.t][t]*n+(withStand?STAND:0))});
+  let applied=0;
+  document.querySelectorAll("[data-t]").forEach(el=>{const b=best(+el.dataset.t,n);if(b.m>n)applied=b.m;el.textContent=fmt(b.v)});
   document.querySelectorAll(".tiers button").forEach((b,i)=>b.classList.toggle("on",i===t));
   tb.querySelectorAll("tr").forEach(tr=>tr.querySelectorAll("td").forEach((td,j)=>td.classList.toggle("hl",j===t+1)));
   document.getElementById("standNote").innerHTML=withStand
     ?"Total estimé avec le forfait stand de CHF 450. <b>Dès 100 convives, le stand est offert.</b>"
     :"<b>Stand offert</b> pour votre événement : il est inclus dès 100 convives.";
+  if(applied) document.getElementById("standNote").innerHTML+="<br>Vous ne payez jamais plus qu'au palier suivant : le total affiché tient compte de ce plafond.";
 }
 slider.addEventListener("input",update);
 document.querySelectorAll(".tiers button").forEach(b=>b.addEventListener("click",()=>{slider.value=b.dataset.v;update()}));
