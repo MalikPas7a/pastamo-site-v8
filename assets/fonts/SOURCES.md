@@ -21,3 +21,12 @@ Feuille officielle de référence : https://fonts.googleapis.com/css2?family=Ins
 - Jost : `Jost-OFL.txt`, source https://raw.githubusercontent.com/google/fonts/main/ofl/jost/OFL.txt
 
 Les fichiers sont redistribués sans modification avec leurs licences.
+
+## Page tarifs 2027 (ajout du 18 novembre 2026)
+
+Fraunces (normal et italique, fichiers variables, graisses 500 et 700) et DM Sans (fichier variable, graisses 400 à 700), sous-ensembles latin et latin-ext, chargés par `css/fonts-tarifs.css`. Fichiers WOFF2 officiels récupérés le 18 novembre 2026 depuis fonts.gstatic.com.
+
+Feuille officielle de référence : https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=DM+Sans:wght@400;500;700&display=swap
+
+- Fraunces : `Fraunces-OFL.txt`, source https://raw.githubusercontent.com/google/fonts/main/ofl/fraunces/OFL.txt
+- DM Sans : `DM-Sans-OFL.txt`, source https://raw.githubusercontent.com/google/fonts/main/ofl/dmsans/OFL.txt
