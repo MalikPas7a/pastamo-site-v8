@@ -497,7 +497,8 @@
     if (how === 'init') { at = s; front(null); arrive(s); return; }
     if (s === last + 1 && !reduced && how !== 'jump' && !behind) {
       queue.push(s);
-      updateLayers();
+      // téléphone : le texte est sous l'image, il n'a pas à attendre la fin du mouvement (sinon l'écran reste noir 3-4 s)
+      updateLayers(phone ? s : undefined);
       if (playing) prepare(vids.find((v) => v !== playing), queue[0]);
       playNext();
     } else cutTo(s);
