@@ -323,7 +323,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
     <div class="cam" id="cam">
       <picture><source media="(orientation:portrait)" srcset="assets/accueil/v-fin.webp"><img src="assets/accueil/d-fin.webp" alt="" decoding="async"></picture>
       <canvas id="gl" aria-hidden="true"></canvas>
-      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="tubef" x="-15%" y="-60%" width="130%" height="230%" color-interpolation-filters="sRGB">
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="tubef" x="-25%" y="-160%" width="150%" height="420%" color-interpolation-filters="sRGB">
         <feOffset in="SourceAlpha" dx="2" dy="7"/><feGaussianBlur stdDeviation="3"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feColorMatrix type="matrix" values="0 0 0 0 .16  0 0 0 0 .03  0 0 0 0 0  0 0 0 1 0" result="ombre"/>
         <feGaussianBlur in="SourceAlpha" stdDeviation="28"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .33  0 0 0 0 .12  0 0 0 .55 0" result="g3"/>
         <feGaussianBlur in="SourceAlpha" stdDeviation="10"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .42  0 0 0 0 .2  0 0 0 .9 0" result="g2"/>
@@ -332,7 +332,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
         <feBlend in="SourceGraphic" mode="multiply"/><feComposite in2="SourceAlpha" operator="in" result="verre"/>
         <feMorphology in="SourceAlpha" operator="erode" radius="1.1"/><feGaussianBlur stdDeviation=".7"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .97  0 0 0 0 .93  0 0 0 1 0" result="coeur"/>
         <feMerge><feMergeNode in="ombre"/><feMergeNode in="g3"/><feMergeNode in="g2"/><feMergeNode in="g1"/><feMergeNode in="verre"/><feMergeNode in="coeur"/></feMerge>
-      </filter><filter id="tubefs" x="-15%" y="-60%" width="130%" height="230%" color-interpolation-filters="sRGB">
+      </filter><filter id="tubefs" x="-25%" y="-160%" width="150%" height="420%" color-interpolation-filters="sRGB">
         <feOffset in="SourceAlpha" dx="1" dy="4"/><feGaussianBlur stdDeviation="2"/><feComponentTransfer><feFuncA type="linear" slope=".55"/></feComponentTransfer><feColorMatrix type="matrix" values="0 0 0 0 .16  0 0 0 0 .03  0 0 0 0 0  0 0 0 1 0" result="ombre"/>
         <feGaussianBlur in="SourceAlpha" stdDeviation="16"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .33  0 0 0 0 .12  0 0 0 .55 0" result="g3"/>
         <feGaussianBlur in="SourceAlpha" stdDeviation="6"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 .42  0 0 0 0 .2  0 0 0 .9 0" result="g2"/>
