@@ -314,6 +314,24 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
   .boxes .provi{top:calc(18px + env(safe-area-inset-top));bottom:auto;left:max(20px,env(safe-area-inset-left));right:auto}
   .plat-g img{max-width:250px}
 }
+
+/* ---- contact WhatsApp toujours visible ---- */
+.wa{position:fixed;z-index:21;left:max(20px,env(safe-area-inset-left));bottom:calc(20px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;padding:8px 18px 8px 8px;border-radius:999px;background:var(--creme);color:#2b1a12;text-decoration:none;box-shadow:0 10px 30px -10px rgba(0,0,0,.55),inset 0 0 0 1px rgba(43,26,18,.08);font:400 .8rem/1.15 Jost,system-ui,sans-serif;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .2s}
+.wa:hover{box-shadow:0 12px 34px -10px rgba(0,0,0,.6),inset 0 0 0 1.5px rgba(43,26,18,.25)}
+.wa-ic{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#1f7a4d;color:#fff;flex:none}
+.wa-pt{position:absolute;right:-1px;top:-1px;width:12px;height:12px;border-radius:50%;background:#b8aa98;box-shadow:0 0 0 2px var(--creme)}
+.wa.dispo .wa-pt{background:#2fbf5b}
+.wa.dispo .wa-pt::after{content:"";position:absolute;inset:0;border-radius:50%;background:#2fbf5b;animation:wa-p 2.4s ease-out infinite}
+@keyframes wa-p{0%{transform:scale(1);opacity:.6}70%,100%{transform:scale(2.4);opacity:0}}
+.wa-tx b{display:block;font-weight:600;font-size:.95rem}.wa-tx small{color:#6b5446;font-size:.74rem}
+@media (max-width:820px){
+  .wa{left:auto;right:max(16px,env(safe-area-inset-right));padding:0;background:transparent;box-shadow:none}
+  .wa-ic{width:56px;height:56px;box-shadow:0 10px 26px -8px rgba(0,0,0,.55)}.wa-ic svg{width:28px;height:28px}
+  .wa-pt{width:14px;height:14px;right:1px;top:1px}
+  .wa-tx{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  body.dock-on .wa{transform:translateY(calc(-1 * (56px + 24px)))}
+}
+@media (prefers-reduced-motion:reduce){.wa.dispo .wa-pt::after{animation:none}.wa{transition:none}}
 </style>
 </head>
 <body>
@@ -455,6 +473,10 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
     </nav>
     <p class="pied-small">Produits locaux · Savoir-faire italien · 2026</p>
   </div></footer>
+  <a class="wa" id="wa" href="https://wa.me/41782133868?text=Bonjour%20Pasta%20Mo%27%2C%20je%20vous%20%C3%A9cris%20depuis%20le%20site%20pour%20un%20%C3%A9v%C3%A9nement." target="_blank" rel="noopener" aria-label="Nous écrire sur WhatsApp au 078 213 38 68">
+    <span class="wa-ic" aria-hidden="true"><svg viewBox="0 0 32 32" width="22" height="22"><path fill="currentColor" d="M16 3C9 3 3.3 8.6 3.3 15.6c0 2.4.7 4.7 1.9 6.7L3.2 29l6.9-1.9c1.9 1 4 1.6 6 1.6 7 0 12.7-5.6 12.7-12.6S23 3 16 3zm0 23.4c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4.1 1.1 1.1-4-.3-.4c-1.1-1.7-1.6-3.6-1.6-5.6C5.3 9.8 10.1 5.1 16 5.1s10.7 4.7 10.7 10.6S21.9 26.4 16 26.4zm5.9-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-1.9-1.8-2.3-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.6.1-.2 0-.4 0-.6l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.6 5.7 5 .8.4 1.4.6 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg><i class="wa-pt" aria-hidden="true"></i></span>
+    <span class="wa-tx"><b>WhatsApp</b><small id="wa-st">Écrivez-nous</small></span>
+  </a>
   <div class="dock" id="dock"><a class="btn btn-p" href="https://ardoise-app-orcin.vercel.app/commande/entreprises">Demander un devis</a></div>
 </main>
 <div class="fiche" id="evfiche" aria-hidden="true" inert>
@@ -935,6 +957,22 @@ document.addEventListener('keydown', e => {
   if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
   else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
 });
+</script>
+
+<script>
+(() => {
+  // point vert seulement aux heures où l'on répond vraiment : lundi-samedi, 8 h-20 h (heure de Genève)
+  const wa = document.getElementById('wa'), st = document.getElementById('wa-st');
+  function maj(){ try {
+    const f = new Intl.DateTimeFormat('fr-CH', { timeZone: 'Europe/Zurich', weekday: 'short', hour: 'numeric', hourCycle: 'h23' }).formatToParts(new Date());
+    const j = f.find(x => x.type === 'weekday').value, h = +f.find(x => x.type === 'hour').value;
+    const ok = !/^dim/i.test(j) && h >= 8 && h < 20;
+    wa.classList.toggle('dispo', ok); st.textContent = ok ? 'Disponible maintenant' : 'Écrivez-nous';
+  } catch (e) {} }
+  maj(); setInterval(maj, 60000);
+  const dock = document.getElementById('dock');
+  new MutationObserver(() => document.body.classList.toggle('dock-on', dock.classList.contains('on'))).observe(dock, { attributes: true, attributeFilter: ['class'] });
+})();
 </script>
 </body>
 </html>
