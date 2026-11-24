@@ -5,9 +5,9 @@
 ## L'essentiel
 
 - Activité : traiteur événementiel (catering) avec stand mobile, street food italienne, pâtes fraîches.
-- Zone : Genève et tout le canton de Genève. Canton de Vaud et reste de la Suisse romande sur demande.
-- Sauces : Bolognese (ragù de bœuf, mijotée longtemps), Pesto Verde (végétarien, préparé à froid), Pomodoro (végétarienne, sans piquant, adaptée aux enfants).
-- Les pâtes fraîches contiennent des œufs.
+- Zone : toute la Suisse romande. Hors du canton de Genève, le déplacement est indiqué dans le devis.
+- Sauces : Bolognese (ragù de bœuf, mijotée longtemps), Pesto Verde (basilic, préparé à froid ; sans viande, contient du fromage), Pomodoro (végétarienne, sans piquant, adaptée aux enfants).
+- Les pâtes fraîches contiennent des œufs (pas d'option vegan). Le Pesto Verde contient du lait et des pignons de pin ; la Bolognese du céleri et du lait.
 - Signature : « Fait avec cœur, là pour rassembler ».
 
 ## Pour quels événements
@@ -20,7 +20,8 @@
 
 ## Demander un devis
 
-- Formulaire : https://pastamo.ch/#contact
+- Devis en ligne (entreprises et événements, dès 20 convives) : https://ardoise-app-orcin.vercel.app/commande/entreprises
+- Précommander une box : https://ardoise-app-orcin.vercel.app/commande
 - E-mail : ciao@pastamo.ch
 - Téléphone : +41 78 213 38 68
 - Instagram : https://www.instagram.com/pastamo.ch/
@@ -28,7 +29,7 @@
 
 ## Pages
 
-- [Accueil](https://pastamo.ch/) : présentation, recettes, événements, histoire, questions fréquentes et contact.
+- [Accueil](https://pastamo.ch/) : les trois box, les événements (entreprises, sport, festivals, fêtes communales et marchés), le déroulé en trois étapes, l'histoire, les questions fréquentes et le contact.
 - [Pasta party pour courses à pied](https://pastamo.ch/pasta-party-course-a-pied.html) : pasta party la veille et repas d'arrivée pour courses, trails et tournois, avec le réel « Eat pasta. Run fasta. ».
 - [Traiteur pour entreprises à Genève](https://pastamo.ch/traiteur-entreprise-geneve.html) : afterworks, séminaires, portes ouvertes, journées clients, repas d'équipe.
 - [Festivals et marchés](https://pastamo.ch/traiteur-festival-geneve.html) : stand autonome pour festivals, open airs, marchés et fêtes communales à Genève et en Suisse romande.
@@ -37,7 +38,7 @@
 
 ## Calendrier
 
-Premiers événements prévus dès début 2027. Les demandes pour la saison 2027 sont ouvertes.
+Premier grand événement : Meyrin Run, 28 novembre 2026. Les demandes pour la saison 2027 sont ouvertes.
 
 ## Entreprise
 
