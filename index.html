@@ -44,7 +44,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
 .cam img{visibility:hidden}.nogl .cam img{visibility:visible}.nogl .cam canvas{display:none}
 .noirci{position:absolute;inset:0;background:#000;pointer-events:none;will-change:opacity}
 .aube{position:absolute;inset:0;pointer-events:none;opacity:0;will-change:opacity;background:radial-gradient(60% 50% at 50% 50%,#FFF1D6 0%,rgba(255,241,214,.85) 35%,rgba(255,226,190,.0) 100%)}
-.blanc{position:absolute;inset:0;background:var(--creme);opacity:0;pointer-events:none;will-change:opacity}
+.blanc{position:absolute;inset:0;background:#F4E2CE;opacity:0;pointer-events:none;will-change:opacity}
 .neon{position:absolute;left:0;top:0;pointer-events:none;white-space:nowrap}
 .tube{display:block;font:italic 400 clamp(2.6rem,5.4vw,5.6rem)/1.1 "Instrument Serif",Georgia,serif;letter-spacing:.005em;text-align:center;color:#ffb98c;padding:.2em .45em;filter:url(#tubef);
   --w:-10%;-webkit-mask-image:linear-gradient(90deg,#000 calc(var(--w) - 1%),transparent calc(var(--w) + 1%));mask-image:linear-gradient(90deg,#000 calc(var(--w) - 1%),transparent calc(var(--w) + 1%))}
@@ -201,7 +201,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
   .intro{height:auto}.scene{position:relative}.cam img{visibility:visible}.cam canvas{display:none}.noirci{opacity:0}.tube{--w:120%}.neon{left:50%;top:66%;transform:translateX(-50%)}#neon2{top:77%}#bulbs{display:none}.indice{display:none}
 }
 
-.boxes .stick{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--fond,#FFF1D6)}
+.boxes .stick{position:sticky;top:0;height:100svh;overflow:hidden;background:var(--fond,#F4E2CE)}
 /* une seule lumière : un halo chaud qui vient de la gauche et descend avec le soleil */
 .boxes .lumiere{position:absolute;inset:0;background:radial-gradient(120% 90% at var(--lx,8%) var(--ly,12%),var(--halo,rgba(255,250,240,.95)) 0,rgba(255,250,240,0) 60%)}
 .boxes .grain{position:absolute;inset:-50%;z-index:3;pointer-events:none;opacity:.07;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -257,6 +257,9 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
 .boxes .lien{font:600 1rem/1 Jost,sans-serif;color:var(--brun);text-decoration:underline;text-decoration-color:rgba(43,26,18,.35);text-underline-offset:5px;padding:14px 4px}
 .boxes .lien:hover{text-decoration-color:var(--brun)}
 .boxes .plat{display:none}
+.boxes.chaine:not(.no3d){height:325svh;margin-top:-150svh;opacity:var(--op,0)}
+.boxes.chaine::before{display:none}
+.boxes.chaine:not(.no3d):not(.vu) .stick{visibility:hidden}
 .boxes.no3d{height:auto;margin-top:0}
 .boxes.no3d .stick{position:relative;height:auto;padding:12vh max(20px,6vw) 10vh}
 .boxes.no3d .geant,.boxes.no3d canvas,.boxes.no3d .txt,.boxes.no3d .compte{display:none}
@@ -517,7 +520,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
   const faits = document.querySelector('.faits'), dock = document.getElementById('dock'), sc = document.getElementById('scene'), fin = document.querySelector('.fin');
   function tick() { const r = sc.getBoundingClientRect(), fr = fin.getBoundingClientRect();
     const ft = faits.getBoundingClientRect(); dock.classList.toggle('sur-terra', ft.top < innerHeight - 20 && ft.bottom > innerHeight - 100);
-    dock.classList.toggle('on', r.top < innerHeight * 0.2 && fr.top > innerHeight * 0.8 && (innerWidth <= 820 || r.bottom < innerHeight * 0.5)); }
+    dock.classList.toggle('on', r.top < innerHeight * 0.2 && (!sc.classList.contains('chaine') || sc.classList.contains('vu')) && fr.top > innerHeight * 0.8 && (innerWidth <= 820 || r.bottom < innerHeight * 0.5)); }
   addEventListener('scroll', () => requestAnimationFrame(tick), { passive: true }); addEventListener('resize', tick); tick();
 })();
 </script>
@@ -527,6 +530,8 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const $ = (id) => document.getElementById(id);
   const intro = $('intro'), cam = $('cam'), noirci = $('noirci'), aube = $('aube'), blanc = $('blanc'), indice = $('indice');
+  // les box sont déjà en place sous l'intro : le plan s'allume sur le fond bolognese, sans écran vide à descendre
+  const boxes = $('scene'); boxes.classList.add('chaine'); let lastOp = -1;
   const clamp = (x) => Math.min(1, Math.max(0, x));
   const ramp = (p, a, b) => clamp((p - a) / (b - a));
   const out3 = (t) => 1 - Math.pow(1 - t, 3);
@@ -568,7 +573,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
   if (!gl) { document.documentElement.classList.add('nogl'); }
   const VS = 'attribute vec2 a;varying vec2 v;uniform vec4 m;void main(){v=vec2(.5)+(a*.5*vec2(1.,-1.))*m.xy;gl_Position=vec4(a,0.,1.);}';
   const FS = `precision highp float;varying vec2 v;
-  uniform sampler2D t0,t1,t2,t3,t4,t5,t6;uniform vec4 S,I;uniform float se,amb,fill,ex;
+  uniform sampler2D t0,t1,t2,t3,t4,t5,t6;uniform vec4 S,I;uniform float se,amb,fill,ex,rim;uniform vec2 px;
   vec3 dec(sampler2D t,float s){vec3 c=texture2D(t,v).rgb;return c*c*c*s;}
   vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
   vec3 srgb(vec3 x){return mix(12.92*x,1.055*pow(x,vec3(1./2.4))-.055,step(.0031308,x));}
@@ -587,6 +592,10 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
     float lu=dot(c,vec3(.3,.59,.11));
     float wall=(1.-m.r)*(1.-smoothstep(.6,.97,lu));
     vec3 w=vec3(.77,.36,.25)*pow(max(lu-.05,0.),1.45)*2.6; w=mix(w,vec3(1.,.62,.45)*lu*1.15,smoothstep(.6,.95,lu)); c=mix(c,w,wall);
+    // fin contour brun à l'intérieur des lettres (comme une enseigne peinte)
+    float er=1.,dl=m.r;for(int k=0;k<12;k++){float an=float(k)*.5236;vec2 d=vec2(cos(an),sin(an))*px;er=min(er,min(texture2D(t5,v+d*rim).r,texture2D(t5,v+d*rim*.5).r));dl=max(dl,texture2D(t5,v+d*rim*.55).r);}
+    float ring=smoothstep(.25,.7,dl)*(1.-smoothstep(.15,.75,er));
+    c=mix(c,vec3(.165,.10,.07),ring*.94);
     float n=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
     gl_FragColor=vec4(c+(n-.5)/255.,1.);}`;
   let U = {}, ready = false, set = '', texs = [];
@@ -597,7 +606,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
     gl.useProgram(pr);
     const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
     const al = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(al); gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
-    ['t0','t1','t2','t3','t4','t5','t6','S','I','se','amb','fill','ex','m'].forEach(k => U[k] = gl.getUniformLocation(pr, k));
+    ['t0','t1','t2','t3','t4','t5','t6','S','I','se','amb','fill','ex','m','rim','px'].forEach(k => U[k] = gl.getUniformLocation(pr, k));
     for (let i = 0; i < 7; i++) gl.uniform1i(U['t' + i], i);
     gl.pixelStorei(gl.UNPACK_COLORSPACE_CONVERSION_WEBGL, gl.NONE);
   }
@@ -615,13 +624,14 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         });
         gl.uniform1f(U.se, SC[s + '-e']); gl.uniform4f(U.S, SC[s + '-l0'], SC[s + '-l1'], SC[s + '-l2'], SC[s + '-l3']);
+        gl.uniform2f(U.px, 1 / ims[5].width, 1 / ims[5].height); gl.uniform1f(U.rim, s === 'v' ? 2 : 3);
         texAspect = ims[0].width / ims[0].height; ready = true; size(); draw(cur);
       }).catch(() => document.documentElement.classList.add('nogl'));
   }
   let texAspect = 16 / 9;
   function size() {
     if (!gl) return;
-    const d = Math.min(devicePixelRatio || 1, 1.5), w = cv.clientWidth, h = cv.clientHeight;
+    const d = Math.min(devicePixelRatio || 1, 2), w = cv.clientWidth, h = cv.clientHeight;
     cv.width = Math.round(w * d); cv.height = Math.round(h * d); gl.viewport(0, 0, cv.width, cv.height);
     const va = w / h; // couverture façon object-fit: cover
     if (va > texAspect) gl.uniform4f(U.m, 1, texAspect / va, 0, 0); else gl.uniform4f(U.m, va / texAspect, 1, 0, 0);
@@ -698,10 +708,24 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
     LY = { W, H, hx: X(heart[0]), hy: Y(heart[1]), tx: (W - tw) / 2 + tw * 0.06, tw: tw * 0.9, ty: ny };
   }
   layout(); if (document.fonts) document.fonts.ready.then(() => { layout(); draw(cur); });
+  // à l'arrivée, l'enseigne grésille dans le noir par petites salves : elle donne envie de défiler pour l'allumer
+  const T0 = performance.now(); let idleT = 0;
+  function idle(p, now) {
+    if (p >= 0.03 || document.hidden) return null;
+    const P = 2400, t = (now - T0 - 700 + P) % P;
+    if (now - T0 < 700 || t > 560) {
+      clearTimeout(idleT); idleT = setTimeout(() => { if (!raf) raf = requestAnimationFrame(tick); }, (now - T0 < 700 ? 700 - (now - T0) : P - t) + 10);
+      return null;
+    }
+    alive = true;
+    const slot = Math.floor(now / 45), env = 1 - ramp(p, 0, 0.03);
+    return [0, 1, 2, 3].map(i => (hash(slot * 1.31 + i * 7.7) < (i === 1 ? 0.6 : 0.35) ? (0.25 + 0.5 * hash(slot * 2.17 + i)) * env : 0));
+  }
   function draw(p) {
     alive = false; const now = performance.now();
-    noirci.style.opacity = (1 - out3(ramp(p, 0.0, 0.08))).toFixed(3);
-    const I = [0, 1, 2, 3].map(i => letter(p, i, now));
+    const fl = idle(p, now), fx = fl ? Math.max(...fl) : 0;
+    noirci.style.opacity = Math.max(0, 1 - out3(ramp(p, 0.0, 0.08)) - 0.85 * fx).toFixed(3);
+    const I = [0, 1, 2, 3].map(i => Math.max(letter(p, i, now), fl ? fl[i] : 0));
     // surtension : l'enseigne entière flashe un instant, puis se stabilise
     const surge = Math.exp(-Math.pow((p - 0.42) / 0.012, 2)) * 0.12;
     // la lumière de l'enseigne remplit la pièce : un peu au premier allumage, pleinement après le retour
@@ -731,6 +755,8 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
     aube.style.opacity = inOut(ramp(p, 0.76, 0.88)).toFixed(3);
     blanc.style.opacity = inOut(ramp(p, 0.78, 0.88)).toFixed(3);
     indice.style.opacity = (1 - ramp(p, 0.02, 0.07)).toFixed(3);
+    const op = +inOut(ramp(p, 0.84, 0.93)).toFixed(3);
+    if (op !== lastOp) { lastOp = op; boxes.style.setProperty('--op', op); boxes.classList.toggle('vu', op > 0); }
   }
   let target = 0, cur = 0, raf = 0;
   function tick() { cur += (target - cur) * 0.2; if (Math.abs(target - cur) < 0.0003) cur = target; draw(cur); raf = (cur === target && !alive) ? 0 : requestAnimationFrame(tick); }
