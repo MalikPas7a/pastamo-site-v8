@@ -593,7 +593,7 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
     float wall=(1.-m.r)*(1.-smoothstep(.6,.97,lu));
     vec3 w=vec3(.77,.36,.25)*pow(max(lu-.05,0.),1.45)*2.6; w=mix(w,vec3(1.,.62,.45)*lu*1.15,smoothstep(.6,.95,lu)); c=mix(c,w,wall);
     // fin contour brun à l'intérieur des lettres (comme une enseigne peinte)
-    float er=1.,dl=m.r;for(int k=0;k<12;k++){float an=float(k)*.5236;vec2 d=vec2(cos(an),sin(an))*px;er=min(er,min(texture2D(t5,v+d*rim).r,texture2D(t5,v+d*rim*.5).r));dl=max(dl,texture2D(t5,v+d*1.8).r);}
+    float er=1.,dl=m.r;for(int k=0;k<12;k++){float an=float(k)*.5236;vec2 d=vec2(cos(an),sin(an))*px;er=min(er,min(texture2D(t5,v+d*rim).r,texture2D(t5,v+d*rim*.5).r));dl=max(dl,texture2D(t5,v+d*rim*.55).r);}
     float ring=smoothstep(.25,.7,dl)*(1.-smoothstep(.15,.75,er));
     c=mix(c,vec3(.165,.10,.07),ring*.94);
     float n=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453);
@@ -624,15 +624,14 @@ html{background:#000}body{background:#000;color:var(--creme);font:400 17px/1.6 J
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         });
         gl.uniform1f(U.se, SC[s + '-e']); gl.uniform4f(U.S, SC[s + '-l0'], SC[s + '-l1'], SC[s + '-l2'], SC[s + '-l3']);
-        gl.uniform2f(U.px, 1 / ims[5].width, 1 / ims[5].height); gl.uniform1f(U.rim, RIM);
+        gl.uniform2f(U.px, 1 / ims[5].width, 1 / ims[5].height); gl.uniform1f(U.rim, s === 'v' ? 2 : 3);
         texAspect = ims[0].width / ims[0].height; ready = true; size(); draw(cur);
       }).catch(() => document.documentElement.classList.add('nogl'));
   }
-  const RIM = 3;   // épaisseur du contour intérieur, en pixels de l'image
   let texAspect = 16 / 9;
   function size() {
     if (!gl) return;
-    const d = Math.min(devicePixelRatio || 1, 1.5), w = cv.clientWidth, h = cv.clientHeight;
+    const d = Math.min(devicePixelRatio || 1, 2), w = cv.clientWidth, h = cv.clientHeight;
     cv.width = Math.round(w * d); cv.height = Math.round(h * d); gl.viewport(0, 0, cv.width, cv.height);
     const va = w / h; // couverture façon object-fit: cover
     if (va > texAspect) gl.uniform4f(U.m, 1, texAspect / va, 0, 0); else gl.uniform4f(U.m, va / texAspect, 1, 0, 0);
